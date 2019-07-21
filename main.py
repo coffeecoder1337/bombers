@@ -7,6 +7,7 @@ class Game:
         pygame.display.set_caption('Bombers')
         self.screen = pygame.display.set_mode((500, 500))
         self.running = True
+        self.clock = pygame.time.Clock()
     
 
     def handler(self):
@@ -19,10 +20,12 @@ class Game:
         while self.running:
             self.handler()
             self.draw()
+            self.clock.tick(60)
+            pygame.display.update()
 
     
     def draw(self):
-        pass
+        self.screen.fill((255, 255, 255))
 
     
     def run(self):
@@ -35,6 +38,8 @@ class Game:
 
     def pause(self):
         pass
+
+
 
 if __name__ == "__main__":
     g = Game().run()
