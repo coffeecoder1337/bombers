@@ -2,6 +2,8 @@ import pygame
 import character
 from pygame.locals import *
 
+pygame.init()
+
 
 class Game:
     def __init__(self):
@@ -11,18 +13,35 @@ class Game:
         self.all_objects = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
-        self.character = character.Character(self.screen_rect.centerx, self.screen_rect.centery, self.all_objects)
+        self.character = character.Character(self.screen_rect.center, self.all_objects)
     
 
     def handler(self):
         for e in pygame.event.get():
             if e.type == QUIT:
                 self.running = False
+            
+            if e.type == KEYDOWN:
+                if e.key in (K_LEFT, K_a):
+                    self.character.change_direction_x(-1)
+                if e.key in (K_RIGHT, K_d):
+                    self.character.change_direction_x(1)
+                if e.key in (K_DOWN, K_s):
+                    self.character.change_direction_y(1)
+                if e.key in (K_UP, K_w):
+                    self.character.change_direction_y(-1)
+            
+            if e.type == KEYUP:
+                if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
+                    self.character.change_direction_x(0)
+                if e.key in (K_DOWN, K_s, K_UP, K_w):
+                    self.character.change_direction_y(0)
     
 
     def loop(self):
         while self.running:
             self.handler()
+            self.character.move()
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
