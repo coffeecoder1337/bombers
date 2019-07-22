@@ -1,4 +1,5 @@
 import pygame
+import character
 from pygame.locals import *
 
 
@@ -6,8 +7,11 @@ class Game:
     def __init__(self):
         pygame.display.set_caption('Bombers')
         self.screen = pygame.display.set_mode((500, 500))
+        self.screen_rect = self.screen.get_rect()
+        self.all_objects = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
+        self.character = character.Character(self.screen_rect.centerx, self.screen_rect.centery, self.all_objects)
     
 
     def handler(self):
@@ -26,6 +30,7 @@ class Game:
     
     def draw(self):
         self.screen.fill((255, 255, 255))
+        self.all_objects.draw(self.screen)
 
     
     def run(self):
