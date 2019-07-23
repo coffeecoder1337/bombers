@@ -12,16 +12,17 @@ class Game:
         self.screen = pygame.display.set_mode((900, 450))
         self.screen_rect = self.screen.get_rect()
         self.all_objects = pygame.sprite.Group()
+        self.platforms = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = [
             "111111111111111111111111111111",
-            "1#0000000000000000000000000001",
+            "1#1000000000000000000000000001",
+            "101000000000000000000000000001",
+            "101111100000000000000000000001",
             "100000000000000000000000000001",
-            "100000001111100000000000000001",
-            "100000000000100000000000000001",
-            "100000000000100000000000000001",
-            "100000000000111110000000000001",
+            "111111100000000000000000000001",
+            "100000000000000000000000000001",
             "100000000000000000000000000001",
             "100000000000000000000000000001",
             "100000000000000000000000000001",
@@ -40,7 +41,7 @@ class Game:
         for row in level:
             for col in row:
                 if col == '1':
-                    block.Block(x, y, self.all_objects)
+                    block.Block(x, y, self.all_objects, self.platforms)
                 if col == '#':
                     self.character = character.Character(x, y, self.all_objects)
                 x += 30
@@ -74,7 +75,7 @@ class Game:
         self.create_level(self.level)
         while self.running:
             self.handler()
-            self.character.move()
+            self.character.move(self.platforms)
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
