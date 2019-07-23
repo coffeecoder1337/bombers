@@ -1,5 +1,6 @@
 import pygame
 import base_game_object
+import bomb
 from pygame.locals import *
 
 
@@ -38,3 +39,7 @@ class Character(base_game_object.BaseGameObject):
     
     def change_direction_y(self, change_y):
         self.directiony = change_y
+
+
+    def place_bomb(self, bombs):
+        bomb.Bomb(self.rect.x, self.rect.y, self.all_objects, bombs)

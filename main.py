@@ -13,6 +13,7 @@ class Game:
         self.screen_rect = self.screen.get_rect()
         self.all_objects = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
+        self.bombs = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = [
@@ -63,6 +64,9 @@ class Game:
                     self.character.change_direction_y(1)
                 if e.key in (K_UP, K_w):
                     self.character.change_direction_y(-1)
+
+                if e.key in (K_SPACE, K_RETURN):
+                    self.character.place_bomb(self.bombs)
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
