@@ -14,7 +14,7 @@ class Game:
         self.all_objects = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
-        self.character = character.Character(self.screen_rect.centerx, self.screen_rect.centery, self.all_objects)
+        self.character = character.Character(self.screen_rect.center, self.all_objects)
     
 
     def create_level(self, level):
