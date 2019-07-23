@@ -10,3 +10,8 @@ class Bomb(base_game_object.BaseGameObject):
         self.image.fill((230, 20, 20))
         self.bombs = bombs
         self.bombs.add(self)
+        pygame.time.set_timer(self.boom, 3000, once = True)
+    
+
+    def boom(self):
+        self.bombs.remove(self)
