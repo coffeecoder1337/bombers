@@ -66,7 +66,7 @@ class Game:
                     self.character.change_direction_y(-1)
 
                 if e.key in (K_SPACE, K_RETURN):
-                    self.character.place_bomb(self.bombs)
+                    self.character.place_bomb(self.bombs, pygame.time.get_ticks())
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
@@ -80,6 +80,8 @@ class Game:
         while self.running:
             self.handler()
             self.character.move(self.platforms)
+            for b in self.bombs:
+                b.check_to_boom(pygame.time.get_ticks())
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
