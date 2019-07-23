@@ -9,12 +9,29 @@ pygame.init()
 class Game:
     def __init__(self):
         pygame.display.set_caption('Bombers')
-        self.screen = pygame.display.set_mode((500, 500))
+        self.screen = pygame.display.set_mode((900, 450))
         self.screen_rect = self.screen.get_rect()
         self.all_objects = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
-        self.character = character.Character(self.screen_rect.center, self.all_objects)
+        self.level = [
+            "111111111111111111111111111111",
+            "1#0000000000000000000000000001",
+            "100000000000000000000000000001",
+            "100000001111100000000000000001",
+            "100000000000100000000000000001",
+            "100000000000100000000000000001",
+            "100000000000111110000000000001",
+            "100000000000000000000000000001",
+            "100000000000000000000000000001",
+            "100000000000000000000000000001",
+            "100000000000000000000000000001",
+            "100000000000000000000000000001",
+            "100000000000000000000000000001",
+            "100000000000000000000000000001",
+            "111111111111111111111111111111"
+        ]
+
     
 
     def create_level(self, level):
@@ -23,7 +40,9 @@ class Game:
         for row in level:
             for col in row:
                 if col == '1':
-                    block.Block(x, y)
+                    block.Block(x, y, self.all_objects)
+                if col == '#':
+                    self.character = character.Character(x, y, self.all_objects)
                 x += 30
             y += 30
             x = 0
@@ -52,6 +71,7 @@ class Game:
     
 
     def loop(self):
+        self.create_level(self.level)
         while self.running:
             self.handler()
             self.character.move()
