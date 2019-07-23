@@ -1,4 +1,5 @@
 import pygame
+import base_game_object
 from pygame.locals import *
 
 

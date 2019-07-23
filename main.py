@@ -1,5 +1,6 @@
 import pygame
 import character
+import block
 from pygame.locals import *
 
 pygame.init()
@@ -15,6 +16,18 @@ class Game:
         self.clock = pygame.time.Clock()
         self.character = character.Character(self.screen_rect.centerx, self.screen_rect.centery, self.all_objects)
     
+
+    def create_level(self, level):
+        x = 0
+        y = 0
+        for row in level:
+            for col in row:
+                if col == '1':
+                    block.Block(x, y)
+                x += 30
+            y += 30
+            x = 0
+
 
     def handler(self):
         for e in pygame.event.get():
