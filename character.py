@@ -10,6 +10,7 @@ class Character(base_game_object.BaseGameObject):
         self.speed = 3
         self.directionx = 0
         self.directiony = 0
+        self.hp = 100
 
 
     def collide(self, dirx, diry, group):
@@ -41,5 +42,5 @@ class Character(base_game_object.BaseGameObject):
         self.directiony = change_y
 
 
-    def place_bomb(self, bombs, spawntime):
-        bomb.Bomb(self.rect.x, self.rect.y, self.all_objects, bombs, spawntime)
+    def place_bomb(self, bombs):
+        bomb.Bomb(self.rect.x, self.rect.y, self.all_objects, bombs)
