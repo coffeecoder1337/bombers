@@ -81,7 +81,7 @@ class Game:
             self.handler()
             self.character.move(self.platforms)
             for b in self.bombs:
-                b.check_to_boom(self.characters)
+                b.check_to_boom()
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
