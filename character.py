@@ -27,6 +27,15 @@ class Character(base_game_object.BaseGameObject):
                     self.rect.top = item.rect.bottom
 
 
+    def check_hp(self):
+        if self.hp <= 0:
+            self.die()
+
+
+    def die(self):
+        self.kill()
+
+
     def move(self, group):
         self.rect.y += self.speed * self.directiony
         self.collide(0, self.directiony, group)

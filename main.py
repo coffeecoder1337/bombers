@@ -83,6 +83,7 @@ class Game:
             self.character.move(self.platforms)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
+            self.character.check_hp()
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
