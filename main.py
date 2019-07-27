@@ -83,7 +83,7 @@ class Game:
             self.character.move(self.platforms)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
-            self.character.check_hp()
+            self.check_lose()
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
@@ -109,6 +109,12 @@ class Game:
     def run(self):
         self.loop()
     
+
+    def check_lose(self):
+        if self.character.check_hp():
+            print("You Lose")
+            self.running = False
+
 
     def close(self):
         pass

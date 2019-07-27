@@ -19,7 +19,7 @@ class Bomb(base_game_object.BaseGameObject):
 
     
     def check_to_boom(self, character, bomb_areas):
-        if pygame.time.get_ticks() - self.spawntime > 3000:
+        if pygame.time.get_ticks() - self.spawntime > 2000:
             b = BombArea(self.rect.centerx, self.rect.centery, self.all_objects, bomb_areas)
             b.check_collide(character)
             self.boom()
