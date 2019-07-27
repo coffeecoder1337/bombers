@@ -53,5 +53,5 @@ class Character(base_game_object.BaseGameObject):
         self.directiony = change_y
 
 
-    def place_bomb(self, bombs, spawntime):
-        bomb.Bomb(self.rect.x, self.rect.y, self.all_objects, bombs, spawntime)
+    def place_bomb(self, bombs):
+        bomb.Bomb(self.rect.x, self.rect.y, self.all_objects, bombs)
