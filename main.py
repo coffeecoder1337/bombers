@@ -14,6 +14,7 @@ class Game:
         self.all_objects = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
         self.bombs = pygame.sprite.Group()
+        self.bomb_areas = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = [
@@ -80,13 +81,25 @@ class Game:
         while self.running:
             self.handler()
             self.character.move(self.platforms)
-            for b in self.bombs:
-                b.check_to_boom(pygame.time.get_ticks())
+            self.check_bombs_to_boom()
+            self.check_bomb_areas_to_remove()
             self.draw()
             self.clock.tick(60)
             pygame.display.update()
 
-    
+
+    def check_bombs_to_boom(self):
+        for b in self.bombs:
+                b.check_to_boom(self.character, self.bomb_areas)
+
+
+    def check_bomb_areas_to_remove(self):
+        for ba in self.bomb_areas:
+            if pygame.time.get_ticks() - ba.spawntime > 500:
+                self.all_objects.remove(ba)
+                self.bomb_areas.remove(ba)
+
+
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.all_objects.draw(self.screen)

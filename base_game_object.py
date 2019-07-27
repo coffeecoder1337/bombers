@@ -9,5 +9,6 @@ class BaseGameObject(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.spawntime = pygame.time.get_ticks()
         self.all_objects = all_objects
         self.all_objects.add(self)

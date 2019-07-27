@@ -10,6 +10,7 @@ class Character(base_game_object.BaseGameObject):
         self.speed = 3
         self.directionx = 0
         self.directiony = 0
+        self.hp = 100
 
 
     def collide(self, dirx, diry, group):
