@@ -28,7 +28,7 @@ class Bomb(base_game_object.BaseGameObject):
 
 class BombArea(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects, bomb_areas):
-        size = (w, h) = (75, 75)
+        size = (w, h) = (100, 100)
         base_game_object.BaseGameObject.__init__(self, x - w/2, y - h/2, all_objects, size)
         self.force_damage = 100
         self.bomb_areas = bomb_areas
