@@ -15,6 +15,7 @@ class Game:
         self.platforms = pygame.sprite.Group()
         self.bombs = pygame.sprite.Group()
         self.bomb_areas = pygame.sprite.Group()
+        self.empty_blocks = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = [
@@ -44,11 +45,15 @@ class Game:
             for col in row:
                 if col == '1':
                     block.Block(x, y, self.all_objects, self.platforms)
+                if col != '1':
+                    block.Empty(x, y, self.empty_blocks)
                 if col == '#':
                     self.character = character.Character(x, y, self.all_objects)
                 x += 30
             y += 30
             x = 0
+
+
 
 
     def handler(self):
@@ -80,7 +85,7 @@ class Game:
         self.create_level(self.level)
         while self.running:
             self.handler()
-            self.character.move(self.platforms)
+            self.character.move(self.platforms, self.empty_blocks)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
             self.check_lose()

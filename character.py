@@ -11,6 +11,13 @@ class Character(base_game_object.BaseGameObject):
         self.directionx = 0
         self.directiony = 0
         self.hp = 100
+        self.current_empty = None
+
+    def get_current_empty(self, empty_blocks):
+        for eb in empty_blocks:
+            if pygame.sprite.collide_rect(self, eb):
+                if eb.rect.x < self.rect.centerx < eb.rect.right and eb.rect.top < self.rect.centery < eb.rect.bottom:
+                    self.current_empty = eb
 
 
     def collide(self, dirx, diry, group):
@@ -27,11 +34,12 @@ class Character(base_game_object.BaseGameObject):
                     self.rect.top = item.rect.bottom
 
 
-    def move(self, group):
+    def move(self, group, empty_blocks):
         self.rect.y += self.speed * self.directiony
         self.collide(0, self.directiony, group)
         self.rect.x += self.speed * self.directionx
         self.collide(self.directionx, 0, group)
+        self.get_current_empty(empty_blocks)
     
 
     def check_hp(self):
@@ -54,4 +62,4 @@ class Character(base_game_object.BaseGameObject):
 
 
     def place_bomb(self, bombs):
-        bomb.Bomb(self.rect.x, self.rect.y, self.all_objects, bombs)
+        bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs)
