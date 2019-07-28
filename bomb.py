@@ -11,7 +11,7 @@ class Bomb(base_game_object.BaseGameObject):
         self.bombs = bombs
         self.spawntime = pygame.time.get_ticks()
         self.coords_list = [int(self.rect.x / 30), int(self.rect.y / 30)]
-        self.areas_length = 3
+        self.areas_length = 4
         self.bombs.add(self)
     
 
@@ -22,7 +22,6 @@ class Bomb(base_game_object.BaseGameObject):
     
     def check_to_boom(self, character, bomb_areas, level):
         if pygame.time.get_ticks() - self.spawntime > 2000:
-            # b = BombArea(self.rect.x, self.rect.y, self.all_objects, bomb_areas)
             self.place_areas(level, bomb_areas)
             for b in bomb_areas:
                 b.check_collide(character)
