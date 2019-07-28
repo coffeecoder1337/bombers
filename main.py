@@ -96,7 +96,7 @@ class Game:
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
-                b.check_to_boom(self.character, self.bomb_areas)
+                b.check_to_boom(self.character, self.bomb_areas, self.level)
 
 
     def check_bomb_areas_to_remove(self):
