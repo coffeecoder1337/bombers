@@ -1,13 +1,14 @@
 import pygame
 import character
 import block
+import socket
 from pygame.locals import *
 
 pygame.init()
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, ip):
         pygame.display.set_caption('Bombers')
         self.screen = pygame.display.set_mode((900, 450))
         self.screen_rect = self.screen.get_rect()
@@ -36,7 +37,21 @@ class Game:
             "111111111111111111111111111111"
         ]
 
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((ip, 5001))
+
     
+    def send_request(self):
+        self.sock.send('get coords'.encode())
+    
+
+    def recv_coords(self):
+        self.send_request()
+        data = self.sock.recv(4096)
+        coords = data.decode().split()
+        coords[0], coords[1] = int(coords[0]), int(coords[1])
+        return coords
+
 
     def create_level(self, level):
         x = 0
@@ -109,6 +124,7 @@ class Game:
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.all_objects.draw(self.screen)
+        print(self.recv_coords())
 
     
     def run(self):
@@ -131,4 +147,4 @@ class Game:
 
 
 if __name__ == "__main__":
-    g = Game().run()
+    g = Game('localhost').run()
