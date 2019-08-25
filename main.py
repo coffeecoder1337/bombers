@@ -9,6 +9,7 @@ pygame.init()
 
 class Game:
     def __init__(self, ip):
+        self.id = None
         pygame.display.set_caption('Bombers')
         self.screen = pygame.display.set_mode((900, 450))
         self.screen_rect = self.screen.get_rect()
@@ -21,7 +22,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = [
             "111111111111111111111111111111",
-            "1#0000010000000100000000100001",
+            "120000010000000100000000100001",
             "111111010111110101111110111101",
             "100000010100000000000010000001",
             "101111010101111101011011111101",
@@ -33,20 +34,24 @@ class Game:
             "101010110101111110111101011101",
             "101000000100000010000001010001",
             "101111101111111010111101010101",
-            "100000000000000010000000000001",
+            "100000000000000010000000000031",
             "111111111111111111111111111111"
         ]
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((ip, 5001))
+        id = self.sock.recv(4096)
+        id = id.decode().split()
+        if id[0] == 'id':
+            self.id = int(id[1])
 
-    
-    def send_request(self):
-        self.sock.send('get coords'.encode())
-    
+    def set_coords(self):
+        msg = str(self.id) + ' set ' + str(self.character.rect.x) + ' ' + str(self.character.rect.y)
+        self.sock.send(msg.encode())
+
 
     def recv_coords(self):
-        self.send_request()
+        self.set_coords()
         data = self.sock.recv(4096)
         coords = data.decode().split()
         coords[0], coords[1] = int(coords[0]), int(coords[1])
@@ -62,8 +67,16 @@ class Game:
                     block.Block(x, y, self.all_objects, self.platforms)
                 if col != '1':
                     block.Empty(x, y, self.empty_blocks)
-                if col == '#':
-                    self.character = character.Character(x, y, self.all_objects)
+                if col == '2':
+                    if self.id == 0:
+                        self.character = character.Character(x, y, self.all_objects)
+                    else:
+                        self.enemy = character.Enemy(x, y, self.all_objects)
+                if col == '3':
+                    if self.id == 1:
+                        self.character = character.Character(x, y, self.all_objects)
+                    else:
+                        self.enemy = character.Enemy(x, y, self.all_objects)
                 x += 30
             y += 30
             x = 0
@@ -124,7 +137,9 @@ class Game:
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.all_objects.draw(self.screen)
-        print(self.recv_coords())
+        coords = self.recv_coords()
+        self.enemy.rect.x = coords[0]
+        self.enemy.rect.y = coords[1]
 
     
     def run(self):

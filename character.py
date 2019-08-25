@@ -63,3 +63,10 @@ class Character(base_game_object.BaseGameObject):
 
     def place_bomb(self, bombs):
         bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs)
+
+
+
+class Enemy(base_game_object.BaseGameObject):
+    def __init__(self, x, y, all_objects):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30))
+        self.image.fill((10, 200, 10))
