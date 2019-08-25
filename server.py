@@ -22,7 +22,7 @@ class Server:
         }
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(('localhost', 5001))
+        self.socket.bind(('', 5001))
         self.socket.listen(2)
 
     def accept_connection(self, server_socket):
