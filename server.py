@@ -1,25 +1,31 @@
 import socket
+import pickle
 from select import select
-
-
-'''
-set 30 40 - изменить текущие координаты
-get - получить текущие координаты
-'''
 
 
 class Server:
     def __init__(self):
         self.to_monitor = []
+        self.levels = [
+            [
+            "111111111111111111111111111111",
+            "120000010000000100000000100001",
+            "111111010111110101111110111101",
+            "100000010100000000000010000001",
+            "101111010101111101011011111101",
+            "101000010101000001000000000001",
+            "101011110100010101011010110101",
+            "100010000001000101000010100101",
+            "111010110101111101111110101101",
+            "101010110100000000100000000001",
+            "101010110101111110111101011101",
+            "101000000100000010000001010001",
+            "101111101111111010111101010101",
+            "100000000000000010000000000031",
+            "111111111111111111111111111111"
+            ]
+        ]
         self.players_now = 0
-        self.data = {
-            "0": {
-                "coords": "30 30"
-            },
-            "1": {
-                "coords": "870 420"
-            }
-        }
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(('', 5001))
@@ -27,21 +33,14 @@ class Server:
 
     def accept_connection(self, server_socket):
         client_scoket, addr = server_socket.accept()
+        self.players_now += 1
         msg = 'id ' + str(self.players_now)
         client_scoket.send(msg.encode())
-        self.players_now += 1
         self.to_monitor.append(client_scoket)
 
 
     def handle(self, req):
-        req = req.decode().split()
-        if req[1] == 'set':
-            if req[0] == "0":
-                self.data["0"]['coords'] = req[2] + ' ' + req[3]
-                return self.data["1"]['coords']
-            if req[0] == "1":
-                self.data["1"]['coords'] = req[2] + ' ' + req[3]
-                return self.data["0"]['coords']
+        pass
 
     def send_command(self, client_socket):
         request = client_socket.recv(4096)
