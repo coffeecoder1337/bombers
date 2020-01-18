@@ -8,7 +8,7 @@ class Bomb(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects, bombs):
         self.size = 30
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size))
-        self.image.fill((230, 20, 20))
+        self.image.fill((200, 50, 50))
         self.bombs = bombs
         self.spawntime = pygame.time.get_ticks()
         self.coords_list = [int(self.rect.x / self.size), int(self.rect.y / self.size)]
