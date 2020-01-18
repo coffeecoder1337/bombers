@@ -104,6 +104,8 @@ class Game:
             if pygame.time.get_ticks() - ba.spawntime > 500:
                 self.all_objects.remove(ba)
                 self.bomb_areas.remove(ba)
+            else:
+                ba.check_collide(self.character)
 
 
     def draw(self):

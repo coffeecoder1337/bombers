@@ -46,7 +46,7 @@ class Bomb(base_game_object.BaseGameObject):
             else:
                 break
         
-        for y in range(self.areas_length):
+        for y in range(1, self.areas_length):
             x = self.coords_list[0]
             y = self.coords_list[1] + y
             if level[y][x] != '1':
