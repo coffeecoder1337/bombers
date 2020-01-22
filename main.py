@@ -15,7 +15,7 @@ class Game:
         self.platforms = pygame.sprite.Group()
         self.bombs = pygame.sprite.Group()
         self.bomb_areas = pygame.sprite.Group()
-        self.empty_blocks = pygame.sprite.Group()
+        self.ground_blocks = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = None
@@ -34,18 +34,20 @@ class Game:
     def create_level(self, level_number):
         x = 0
         y = 0
+        cx, cy = (0, 0)
         self.level = self.read_level_file(f"levels\level{level_number}.txt")
         for row in self.level:
             for col in row:
                 if col == '1':
                     block.Block(x, y, self.all_objects, self.platforms)
-                if col != '1':
-                    block.Empty(x, y, self.empty_blocks)
+                if col == '0':
+                    block.Ground(x, y, self.all_objects, self.ground_blocks)
                 if col == '#':
-                    self.character = character.Character(x, y, self.all_objects)
+                    cx, cy = (x, y)
                 x += 30
             y += 30
             x = 0
+        self.character = character.Character(cx, cy, self.all_objects)
 
 
 
@@ -79,7 +81,7 @@ class Game:
         self.create_level(self.level_number)
         while self.running:
             self.handler()
-            self.character.move(self.platforms, self.empty_blocks)
+            self.character.move(self.platforms, self.ground_blocks)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
             self.check_lose()

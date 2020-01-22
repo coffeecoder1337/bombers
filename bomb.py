@@ -1,4 +1,5 @@
 import pygame
+import images
 import base_game_object
 from pygame.locals import *
 
@@ -7,8 +8,7 @@ from pygame.locals import *
 class Bomb(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects, bombs):
         self.size = 30
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size))
-        self.image.fill((200, 50, 50))
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), images.bomb, color = (200, 50, 50))
         self.bombs = bombs
         self.spawntime = pygame.time.get_ticks()
         self.coords_list = [int(self.rect.x / self.size), int(self.rect.y / self.size)]
@@ -66,11 +66,10 @@ class Bomb(base_game_object.BaseGameObject):
 class BombArea(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects, bomb_areas):
         self.size = 30
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size))
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), images.bomb_area, color = (200, 50, 50))
         self.force_damage = 100
         self.bomb_areas = bomb_areas
         self.bomb_areas.add(self)
-        self.image.fill((200, 50, 50))
 
     def check_collide(self, character):
         if pygame.sprite.collide_rect(self, character):

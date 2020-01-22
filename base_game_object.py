@@ -1,9 +1,10 @@
 import pygame
+import images
 from pygame.locals import *
 
 
 class BaseGameObject(pygame.sprite.Sprite):
-    def __init__(self, x, y, all_objects, size):
+    def __init__(self, x, y, all_objects, size, image, color):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface(size)
         self.rect = self.image.get_rect()
@@ -12,3 +13,8 @@ class BaseGameObject(pygame.sprite.Sprite):
         self.spawntime = pygame.time.get_ticks()
         self.all_objects = all_objects
         self.all_objects.add(self)
+        if image is not None:
+            self.image = image
+        else:
+            self.image = pygame.Surface(size)
+            self.image.fill(color)
