@@ -68,7 +68,7 @@ class Game:
                     self.character.change_direction_y(-1)
 
                 if e.key in (K_SPACE, K_RETURN):
-                    self.character.place_bomb(self.bombs)
+                    bx, by = self.character.place_bomb(self.bombs)
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
