@@ -14,9 +14,6 @@ class Character(base_game_object.BaseGameObject):
         self.hp = 100
         self.current_empty = None
 
-    def get_coords(self):
-        return (self.rect.x, self.rect.y)
-
     def get_current_empty(self, ground_blocks):
         for eb in ground_blocks:
             if pygame.sprite.collide_rect(self, eb):
@@ -44,6 +41,7 @@ class Character(base_game_object.BaseGameObject):
         self.rect.x += self.speed * self.directionx
         self.collide(self.directionx, 0, group)
         self.get_current_empty(ground_blocks)
+        return (self.rect.x, self.rect.y)
     
 
     def check_hp(self):
