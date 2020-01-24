@@ -1,4 +1,5 @@
 import pygame
+import images
 import base_game_object
 import bomb
 from pygame.locals import *
@@ -6,7 +7,7 @@ from pygame.locals import *
 
 class Character(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects):
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30))
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.character, (0, 0, 0))
         self.speed = 3
         self.directionx = 0
         self.directiony = 0
@@ -34,13 +35,16 @@ class Character(base_game_object.BaseGameObject):
                     self.rect.top = item.rect.bottom
 
 
-    def move(self, group, empty_blocks):
+    def move(self, group, ground_blocks):
         self.rect.y += self.speed * self.directiony
         self.collide(0, self.directiony, group)
         self.rect.x += self.speed * self.directionx
         self.collide(self.directionx, 0, group)
         self.get_current_empty(ground_blocks)
+<<<<<<< HEAD
         return (self.rect.x, self.rect.y)
+=======
+>>>>>>> af69f748ca991b53fc2f1e00c4be1cb445f288c3
     
 
     def check_hp(self):
@@ -63,4 +67,6 @@ class Character(base_game_object.BaseGameObject):
 
 
     def place_bomb(self, bombs):
-        bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs)
+        b = bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs)
+        return (b.rect.x, b.rect.y)
+

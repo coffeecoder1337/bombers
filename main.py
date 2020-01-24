@@ -17,26 +17,11 @@ class Game:
         self.platforms = pygame.sprite.Group()
         self.bombs = pygame.sprite.Group()
         self.bomb_areas = pygame.sprite.Group()
-        self.empty_blocks = pygame.sprite.Group()
+        self.ground_blocks = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
-        self.level = [
-            "111111111111111111111111111111",
-            "1#0000010000000100000000100001",
-            "111111010111110101111110111101",
-            "100000010100000000000010000001",
-            "101111010101111101011011111101",
-            "101000010101000001000000000001",
-            "101011110100010101011010110101",
-            "100010000001000101000010100101",
-            "111010110101111101111110101101",
-            "101010110100000000100000000001",
-            "101010110101111110111101011101",
-            "101000000100000010000001010001",
-            "101111101111111010111101010101",
-            "100000000000000010000000000001",
-            "111111111111111111111111111111"
-        ]
+        self.level = None
+        self.level_number = 1
 
         #network
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -51,11 +36,21 @@ class Game:
             self.opponent_symbol = "#"
 
     
+    def read_level_file(self, filename):
+        with open(filename, "r") as level:
+            l = level.readlines()
+        level.close()
+        for line in range(len(l)):
+            l[line] = l[line].strip()
+        return l
 
-    def create_level(self, level):
+
+    def create_level(self, level_number):
         x = 0
         y = 0
-        for row in level:
+        cx, cy = (0, 0)
+        self.level = self.read_level_file(f"levels\level{level_number}.txt")
+        for row in self.level:
             for col in row:
                 if col == '1':
                     block.Block(x, y, self.all_objects, self.platforms)
@@ -99,7 +94,7 @@ class Game:
                     self.character.change_direction_y(0)
     
     def loop(self):
-        self.create_level(self.level)
+        self.create_level(self.level_number)
         while self.running:
             self.handler()
             # ... recieving opponent rect.x, rect.y
@@ -121,7 +116,7 @@ class Game:
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
-                b.check_to_boom(self.character, self.bomb_areas, self.level)
+            b.check_to_boom(self.character, self.bomb_areas, self.level)
 
 
     def check_bomb_areas_to_remove(self):
@@ -129,6 +124,8 @@ class Game:
             if pygame.time.get_ticks() - ba.spawntime > 500:
                 self.all_objects.remove(ba)
                 self.bomb_areas.remove(ba)
+            else:
+                ba.check_collide(self.character)
 
 
     def draw(self):
