@@ -1,15 +1,13 @@
-import asyncio
+import pygame
 import character
 import block
-import pygame
-import socket
 from pygame.locals import *
 
 pygame.init()
 
 
 class Game:
-    def __init__(self, host = 'localhost', port = 5005):
+    def __init__(self):
         pygame.display.set_caption('Bombers')
         self.screen = pygame.display.set_mode((900, 450))
         self.screen_rect = self.screen.get_rect()
@@ -22,18 +20,6 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = None
         self.level_number = 1
-
-        #network
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.client_socket.connect((host, port))
-
-        # get symb
-        self.client_socket.send("connect".encode())
-        self.character_symbol = self.client_socket.recv(64).decode()
-        if self.character_symbol == "#":
-            self.opponent_symbol = "$"
-        else:
-            self.opponent_symbol = "#"
 
     
     def read_level_file(self, filename):
@@ -54,17 +40,14 @@ class Game:
             for col in row:
                 if col == '1':
                     block.Block(x, y, self.all_objects, self.platforms)
-                if col != '1':
+                if col == '0':
                     block.Ground(x, y, self.all_objects, self.ground_blocks)
-                if col == self.character_symbol:
+                if col == '#':
                     cx, cy = (x, y)
-                if col == self.opponent_symbol:
-                    ox, oy = (x, y)
                 x += 30
             y += 30
             x = 0
         self.character = character.Character(cx, cy, self.all_objects)
-        self.opponent = character.Character(ox, oy, self.all_objects)
 
 
 
@@ -85,7 +68,7 @@ class Game:
                     self.character.change_direction_y(-1)
 
                 if e.key in (K_SPACE, K_RETURN):
-                    bx, by = self.character.place_bomb(self.bombs) # ... sending bx, by
+                    bx, by = self.character.place_bomb(self.bombs)
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
@@ -93,16 +76,12 @@ class Game:
                 if e.key in (K_DOWN, K_s, K_UP, K_w):
                     self.character.change_direction_y(0)
     
+
     def loop(self):
         self.create_level(self.level_number)
         while self.running:
             self.handler()
-            # ... recieving opponent rect.x, rect.y
-            coords = self.character.move(self.platforms, self.ground_blocks)
-            self.client_socket.send(str(coords).encode())
-            data = self.client_socket.recv(1024).decode()
-            coords = self.parse_coords(data)
-            self.opponent.rect.x, self.opponent.rect.y = coords[0], coords[1]
+            self.character.move(self.platforms, self.ground_blocks)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
             self.check_lose()
@@ -110,9 +89,6 @@ class Game:
             self.clock.tick(60)
             pygame.display.update()
 
-    def parse_coords(self, coords):
-        coords = coords.strip("'()'").split(", ")
-        return (int(coords[0]), int(coords[1]))
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
