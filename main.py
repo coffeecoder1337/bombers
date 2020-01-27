@@ -1,6 +1,6 @@
-import asyncio
 import character
 import block
+import bomb
 import pygame
 import socket
 from pygame.locals import *
@@ -86,6 +86,7 @@ class Game:
 
                 if e.key in (K_SPACE, K_RETURN):
                     bx, by = self.character.place_bomb(self.bombs) # ... sending bx, by
+                    self.client_socket.send(f"bomb ({str(bx)}, {str(by)})".encode())
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
@@ -99,10 +100,9 @@ class Game:
             self.handler()
             # ... recieving opponent rect.x, rect.y
             coords = self.character.move(self.platforms, self.ground_blocks)
-            self.client_socket.send(str(coords).encode())
+            self.client_socket.send(f"move {str(coords)}".encode())
             data = self.client_socket.recv(1024).decode()
-            coords = self.parse_coords(data)
-            self.opponent.rect.x, self.opponent.rect.y = coords[0], coords[1]
+            self.parse_data(data)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
             self.check_lose()
@@ -110,9 +110,14 @@ class Game:
             self.clock.tick(60)
             pygame.display.update()
 
-    def parse_coords(self, coords):
-        coords = coords.strip("'()'").split(", ")
-        return (int(coords[0]), int(coords[1]))
+    def parse_data(self, data): # 'bomb (34, 434)'
+        data = data.strip("'").split()
+        coords = data[1].strip("(,"), data[2].strip(")")
+        cx, cy = int(coords[0]), int(coords[1])
+        if data[0] == 'bomb':
+            bomb.Bomb(cx, cy, self.all_objects, self.bombs)
+        if data[0] == 'move':
+            self.opponent.rect.x, self.opponent.rect.y = cx, cy
 
     def check_bombs_to_boom(self):
         for b in self.bombs:

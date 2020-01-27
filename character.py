@@ -41,10 +41,7 @@ class Character(base_game_object.BaseGameObject):
         self.rect.x += self.speed * self.directionx
         self.collide(self.directionx, 0, group)
         self.get_current_empty(ground_blocks)
-<<<<<<< HEAD
         return (self.rect.x, self.rect.y)
-=======
->>>>>>> af69f748ca991b53fc2f1e00c4be1cb445f288c3
     
 
     def check_hp(self):
