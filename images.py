@@ -35,3 +35,8 @@ try:
 except:
     character = None
 
+try:
+    character_blue = pygame.image.load('images/character/character_blue.png')
+except:
+    character_blue = None
+

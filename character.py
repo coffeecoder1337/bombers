@@ -6,12 +6,13 @@ from pygame.locals import *
 
 
 class Character(base_game_object.BaseGameObject):
-    def __init__(self, x, y, all_objects):
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.character, (0, 0, 0))
+    def __init__(self, x, y, all_objects, image=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), image, (0, 0, 0))
         self.speed = 3
         self.directionx = 0
         self.directiony = 0
         self.hp = 100
+        self.original_image = self.image
         self.current_empty = None
 
     def get_coords(self):
@@ -36,7 +37,7 @@ class Character(base_game_object.BaseGameObject):
                     self.rect.bottom = item.rect.top
                 if diry < 0:
                     self.rect.top = item.rect.bottom
-
+                    
 
     def move(self, group, ground_blocks):
         self.rect.y += self.speed * self.directiony

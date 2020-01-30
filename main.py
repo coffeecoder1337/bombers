@@ -48,7 +48,7 @@ class Game:
                 x += 30
             y += 30
             x = 0
-        self.character = character.Character(cx, cy, self.all_objects)
+        self.character = character.Character(cx, cy, self.all_objects, images.character_blue)
 
 
 
@@ -61,12 +61,17 @@ class Game:
             if e.type == KEYDOWN:
                 if e.key in (K_LEFT, K_a):
                     self.character.change_direction_x(-1)
+                    self.character.image = pygame.transform.rotate(self.character.original_image, -90)
                 if e.key in (K_RIGHT, K_d):
                     self.character.change_direction_x(1)
+                    self.character.image = pygame.transform.rotate(self.character.original_image, 90)
                 if e.key in (K_DOWN, K_s):
                     self.character.change_direction_y(1)
+                    self.character.image = pygame.transform.rotate(self.character.original_image, 0)
                 if e.key in (K_UP, K_w):
                     self.character.change_direction_y(-1)
+                    self.character.image = pygame.transform.rotate(self.character.original_image, 180)
+                self.character.rect = self.character.image.get_rect(center=self.character.rect.center)
 
                 if e.key in (K_SPACE, K_RETURN):
                     bx, by = self.character.place_bomb(self.bombs, 100, images.laser, images.laser_area, True)
@@ -93,7 +98,7 @@ class Game:
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
-            b.check_to_boom(self.character, self.bomb_areas, self.level)
+            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000)
 
 
     def check_bomb_areas_to_remove(self):
