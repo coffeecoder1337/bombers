@@ -8,6 +8,7 @@ from pygame.locals import *
 class Character(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.character, (0, 0, 0))
+        self.start_pos = (x, y)
         self.speed = 3
         self.directionx = 0
         self.directiony = 0
@@ -46,7 +47,7 @@ class Character(base_game_object.BaseGameObject):
 
     def check_hp(self):
         if self.hp <= 0:
-            self.die()
+            # self.die()
             return True
         return False
 

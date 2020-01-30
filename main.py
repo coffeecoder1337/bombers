@@ -1,6 +1,8 @@
 import character
 import block
 import bomb
+import NetworkObject
+import pickle
 import pygame
 import socket
 from pygame.locals import *
@@ -22,18 +24,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = None
         self.level_number = 1
-
-        #network
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.client_socket.connect((host, port))
-
-        # get symb
-        self.client_socket.send("connect".encode())
-        self.character_symbol = self.client_socket.recv(64).decode()
-        if self.character_symbol == "#":
-            self.opponent_symbol = "$"
-        else:
-            self.opponent_symbol = "#"
+        self.host = host
+        self.port = port
 
     
     def read_level_file(self, filename):
@@ -72,6 +64,8 @@ class Game:
     def handler(self):
         for e in pygame.event.get():
             if e.type == QUIT:
+                NetworkObject.NetworkObject(event="left").send_to_server(self.client_socket)
+                self.client_socket.close()
                 self.running = False
             
             if e.type == KEYDOWN:
@@ -86,7 +80,10 @@ class Game:
 
                 if e.key in (K_SPACE, K_RETURN):
                     bx, by = self.character.place_bomb(self.bombs) # ... sending bx, by
-                    self.client_socket.send(f"bomb ({str(bx)}, {str(by)})".encode())
+                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+                    data = pickle.loads(self.client_socket.recv(2048))
+                    print(data.event)
+                    # self.client_socket.send(f"bomb ({str(bx)}, {str(by)}) {self.character.hp}".encode())
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
@@ -96,28 +93,52 @@ class Game:
     
     def loop(self):
         self.create_level(self.level_number)
+        if self.character_symbol == "#":
+            while True:
+                data = pickle.loads(self.client_socket.recv(2048))
+                print(data.event)
+                if data.event == "opponent":
+                    break
+
         while self.running:
             self.handler()
             # ... recieving opponent rect.x, rect.y
             coords = self.character.move(self.platforms, self.ground_blocks)
-            self.client_socket.send(f"move {str(coords)}".encode())
-            data = self.client_socket.recv(1024).decode()
-            self.parse_data(data)
-            self.check_bombs_to_boom()
-            self.check_bomb_areas_to_remove()
-            self.check_lose()
-            self.draw()
-            self.clock.tick(60)
-            pygame.display.update()
+            try:
+                NetworkObject.NetworkObject(event="move", coords=coords, hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+                # self.client_socket.send(f"move {str(coords)} {self.character.hp}".encode())
+                data = pickle.loads(self.client_socket.recv(2048))
+                print(data)
+            except Exception as e:
+                print(e)
+                print("opponent left the game. exit...")
+                raise SystemExit
+            else:
+                self.parse_data(data)
+                self.check_bombs_to_boom()
+                self.check_bomb_areas_to_remove()
+                self.check_lose()
+                self.draw()
+                self.clock.tick(60)
+                pygame.display.update()
 
-    def parse_data(self, data): # 'bomb (34, 434)'
-        data = data.strip("'").split()
-        coords = data[1].strip("(,"), data[2].strip(")")
-        cx, cy = int(coords[0]), int(coords[1])
-        if data[0] == 'bomb':
-            bomb.Bomb(cx, cy, self.all_objects, self.bombs)
-        if data[0] == 'move':
-            self.opponent.rect.x, self.opponent.rect.y = cx, cy
+    def parse_data(self, data):
+        print(data.event)
+        if data.event == 'left':
+            self.running = False
+            NetworkObject.NetworkObject(event="left").send_to_server(self.client_socket)
+            self.client_socket.close()
+            print("opponent left the game")
+            return
+
+        self.opponent.hp = data.hp
+        if data.event == 'bomb':
+            bomb.Bomb(data.coords[0], data.coords[1], self.all_objects, self.bombs)
+            NetworkObject.NetworkObject(event="bomb_ok").send_to_server(self.client_socket)
+        if data.event == 'move':
+            self.opponent.rect.x, self.opponent.rect.y = data.coords
+        if data.event == 'restart':
+            self.restart()
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
@@ -139,13 +160,37 @@ class Game:
 
     
     def run(self):
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.client_socket.connect((self.host, self.port))
+
+        NetworkObject.NetworkObject(event="connect").send_to_server(self.client_socket)
+        # self.client_socket.send("connect".encode())
+        data = pickle.loads(self.client_socket.recv(2048))
+        print(data)
+        print(data.event, data.symbol, data.game_id)
+
+        self.game_id = data.game_id
+        if data.symbol == "#":
+            self.opponent_symbol = "$"
+            self.character_symbol = "#"
+        else:
+            self.opponent_symbol = "#"
+            self.character_symbol = "$"
+            NetworkObject.NetworkObject(event="opponent").send_to_server(self.client_socket)
+
         self.loop()
     
 
+    def restart(self):
+        self.character.rect.x, self.character.rect.y = self.character.start_pos
+        self.character.hp = 100
+
+
     def check_lose(self):
         if self.character.check_hp():
-            print("You Lose")
-            self.running = False
+            self.restart()
+            NetworkObject.NetworkObject(event="restart", coords=(self.character.rect.x, self.character.rect.y), hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+            # self.client_socket.send(f"restart ({str(self.character.rect.x)}, {str(self.character.rect.y)}) {self.character.hp}".encode())
 
 
     def close(self):
@@ -158,4 +203,4 @@ class Game:
 
 
 if __name__ == "__main__":
-    g = Game().run()
+    g = Game().run() # host="172.105.78.215"
