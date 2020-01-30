@@ -15,6 +15,7 @@ class Bomb(base_game_object.BaseGameObject):
         self.areas_length = areas_length
         self.area_image = area_image
         self.rotate_area = rotate_area
+        self.areas_placed = False
         self.bombs.add(self)
     
 
@@ -23,10 +24,10 @@ class Bomb(base_game_object.BaseGameObject):
         self.all_objects.remove(self)
 
     def check_to_boom(self, character, bomb_areas, level):
-        if pygame.time.get_ticks() - self.spawntime > 2000:
+        if pygame.time.get_ticks() - self.spawntime > 2000  and not self.areas_placed:
             self.place_areas(level, bomb_areas)
-            for b in bomb_areas:
-                b.check_collide(character)
+            self.areas_placed = True
+        if pygame.time.get_ticks() - self.spawntime > 3000:
             self.boom()
 
 
