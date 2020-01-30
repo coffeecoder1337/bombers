@@ -65,7 +65,7 @@ class Character(base_game_object.BaseGameObject):
         self.directiony = change_y
 
 
-    def place_bomb(self, bombs):
-        b = bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs)
+    def place_bomb(self, bombs, areas_length=4, image=None, area_image=None):
+        b = bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs,  areas_length, image, area_image)
         return (b.rect.x, b.rect.y)
 

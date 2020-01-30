@@ -1,6 +1,7 @@
-import pygame
-import character
 import block
+import character
+import images
+import pygame
 from pygame.locals import *
 
 pygame.init()
@@ -40,7 +41,7 @@ class Game:
             for col in row:
                 if col == '1':
                     block.Block(x, y, self.all_objects, self.platforms)
-                if col == '0':
+                if col != '1':
                     block.Ground(x, y, self.all_objects, self.ground_blocks)
                 if col == '#':
                     cx, cy = (x, y)
@@ -68,7 +69,7 @@ class Game:
                     self.character.change_direction_y(-1)
 
                 if e.key in (K_SPACE, K_RETURN):
-                    bx, by = self.character.place_bomb(self.bombs)
+                    bx, by = self.character.place_bomb(self.bombs, 100, images.laser, images.laser_area)
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):

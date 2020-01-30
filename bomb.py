@@ -6,13 +6,14 @@ from pygame.locals import *
 
 
 class Bomb(base_game_object.BaseGameObject):
-    def __init__(self, x, y, all_objects, bombs):
+    def __init__(self, x, y, all_objects, bombs, areas_length=4, image=None, area_image=None):
         self.size = 30
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), images.bomb, color = (200, 50, 50))
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), image, color = (200, 50, 50))
         self.bombs = bombs
         self.spawntime = pygame.time.get_ticks()
         self.coords_list = [int(self.rect.x / self.size), int(self.rect.y / self.size)]
-        self.areas_length = 4
+        self.areas_length = areas_length
+        self.area_image = area_image
         self.bombs.add(self)
     
 
@@ -30,11 +31,11 @@ class Bomb(base_game_object.BaseGameObject):
 
 
     def place_areas(self, level, bomb_areas):
-        for x in range(self.areas_length):
+        for x in range(1, self.areas_length):
             x = self.coords_list[0] + x
             y = self.coords_list[1]
             if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas))
+                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, self.area_image))
             else:
                 break
         
@@ -42,7 +43,7 @@ class Bomb(base_game_object.BaseGameObject):
             x = self.coords_list[0] + x * (-1)
             y = self.coords_list[1]
             if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas))
+                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, self.area_image))
             else:
                 break
         
@@ -50,7 +51,7 @@ class Bomb(base_game_object.BaseGameObject):
             x = self.coords_list[0]
             y = self.coords_list[1] + y
             if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas))
+                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, self.area_image))
             else:
                 break
         
@@ -58,15 +59,15 @@ class Bomb(base_game_object.BaseGameObject):
             x = self.coords_list[0]
             y = self.coords_list[1] + y * (-1)
             if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas))
+                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, self.area_image))
             else:
                 break
 
 
 class BombArea(base_game_object.BaseGameObject):
-    def __init__(self, x, y, all_objects, bomb_areas):
+    def __init__(self, x, y, all_objects, bomb_areas, area_image):
         self.size = 30
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), images.bomb_area, color = (200, 50, 50))
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), area_image, color = (200, 50, 50))
         self.force_damage = 100
         self.bomb_areas = bomb_areas
         self.bomb_areas.add(self)
