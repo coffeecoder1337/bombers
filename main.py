@@ -200,7 +200,7 @@ class Game:
         pass
 
 
-def receving (game, name):
+def receiving (game, name):
     while game.running:
         try:
             while True:
