@@ -24,4 +24,3 @@ try:
     character = pygame.image.load('images/character/character.png')
 except:
     character = None
-

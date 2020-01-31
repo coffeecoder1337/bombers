@@ -27,10 +27,8 @@ class Server:
                         network_object.symbol = "#"
                     else:
                         network_object.symbol = "$"
-                        # self.server_socket.sendto("opponent".encode(), client)
                     network_object.game_id = self.games
                     network_object.send_to_client(self.server_socket, adress)
-                    # self.server_socket.sendto(msg.encode(), adress)
                     
                 else:
                     for client in self.clients:
