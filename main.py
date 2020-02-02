@@ -28,6 +28,7 @@ class Game:
         self.host = host
         self.port = port
         self.data = None
+        self.moving = False
 
     
     def read_level_file(self, filename):
@@ -66,7 +67,7 @@ class Game:
     def handler(self):
         for e in pygame.event.get():
             if e.type == QUIT:
-                NetworkObject.NetworkObject(event="left").send_to_server(self.client_socket)
+                NetworkObject.NetworkObject(event="left", game_id=self.game_id).send_to_server(self.client_socket)
                 self.client_socket.close()
                 self.running = False
             
@@ -97,7 +98,6 @@ class Game:
         self.create_level(self.level_number)
         if self.character_symbol == "#":
             while True:
-                print(self.data.event)
                 if self.data.event == "opponent":
                     break
 
@@ -106,33 +106,33 @@ class Game:
             self.handler()
             # ... recieving opponent rect.x, rect.y
             coords = self.character.move(self.platforms, self.ground_blocks)
-            try:
-                NetworkObject.NetworkObject(event="move", coords=coords, hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
-            except Exception as e:
-                print(e)
-                print("opponent left the game. exit...")
-                raise SystemExit
-            else:
-                self.check_bombs_to_boom()
-                self.check_bomb_areas_to_remove()
-                self.check_lose()
-                self.draw()
-                self.clock.tick(60)
-                pygame.display.update()
+            if coords[1] != coords[0]:
+                try:
+                    NetworkObject.NetworkObject(event="move", coords=coords[1], hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+                except Exception as e:
+                    print(e)
+                    print("opponent left the game. exit...")
+                    raise SystemExit
+            
+            self.check_bombs_to_boom()
+            self.check_bomb_areas_to_remove()
+            self.check_lose()
+            self.draw()
+            self.clock.tick(60)
+            pygame.display.update()
 
 
     def parse_data(self, data):
         if data is not None:
             if data.event == 'left':
                 self.running = False
-                NetworkObject.NetworkObject(event="left").send_to_server(self.client_socket)
+                NetworkObject.NetworkObject(event="left", game_id=self.game_id).send_to_server(self.client_socket)
                 self.client_socket.close()
                 print("opponent left the game")
                 return
 
             self.opponent.hp = data.hp
             if data.event == 'bomb':
-                print(data.event)
                 bomb.Bomb(data.coords[0], data.coords[1], self.all_objects, self.bombs)
             if data.event == 'move':
                 self.opponent.rect.x, self.opponent.rect.y = data.coords
@@ -176,7 +176,7 @@ class Game:
         else:
             self.opponent_symbol = "#"
             self.character_symbol = "$"
-            NetworkObject.NetworkObject(event="opponent").send_to_server(self.client_socket)
+            NetworkObject.NetworkObject(event="opponent", game_id=self.game_id).send_to_server(self.client_socket)
 
         self.loop()
     
@@ -213,7 +213,7 @@ def receiving (game, name):
 
 if __name__ == "__main__":
     g = Game() # host="172.105.78.215"
-    rT = threading.Thread(target = receving, args = (g, "RecvThread"))
+    rT = threading.Thread(target = receiving, args = (g, "RecvThread"))
     rT.start()
     g.run()
     rT.join()

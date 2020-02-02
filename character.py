@@ -37,12 +37,13 @@ class Character(base_game_object.BaseGameObject):
 
 
     def move(self, group, ground_blocks):
+        prev_coords = self.rect.x, self.rect.y
         self.rect.y += self.speed * self.directiony
         self.collide(0, self.directiony, group)
         self.rect.x += self.speed * self.directionx
         self.collide(self.directionx, 0, group)
         self.get_current_empty(ground_blocks)
-        return (self.rect.x, self.rect.y)
+        return (prev_coords, (self.rect.x, self.rect.y))
     
 
     def check_hp(self):
