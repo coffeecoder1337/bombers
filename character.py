@@ -9,11 +9,13 @@ class Character(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects, image=None):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), image, (0, 0, 0))
         self.speed = 3
-        self.directionx = 0
-        self.directiony = 0
         self.hp = 100
         self.original_image = self.image
         self.current_empty = None
+        self.right = 0
+        self.left = 0
+        self.up = 0
+        self.down = 0
 
     def get_coords(self):
         return (self.rect.x, self.rect.y)
@@ -41,10 +43,10 @@ class Character(base_game_object.BaseGameObject):
 
     def move(self, group, ground_blocks):
         prev_coords = self.rect.x, self.rect.y
-        self.rect.y += self.speed * self.directiony
-        self.collide(0, self.directiony, group)
-        self.rect.x += self.speed * self.directionx
-        self.collide(self.directionx, 0, group)
+        self.rect.y += self.speed * (self.down - self.up)
+        self.collide(0, (self.down - self.up), group)
+        self.rect.x += self.speed * (self.right - self.left)
+        self.collide((self.right - self.left), 0, group)
         self.get_current_empty(ground_blocks)
         return prev_coords
     
@@ -58,14 +60,6 @@ class Character(base_game_object.BaseGameObject):
 
     def die(self):
         self.kill()
-
-
-    def change_direction_x(self, change_x):
-        self.directionx = change_x
-
-    
-    def change_direction_y(self, change_y):
-        self.directiony = change_y
 
 
     def place_bomb(self, bombs, areas_length=4, image=None, area_image=None, rotate_area=False):

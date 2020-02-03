@@ -57,25 +57,29 @@ class Game:
         for e in pygame.event.get():
             if e.type == QUIT:
                 self.running = False
-            
+
             if e.type == KEYDOWN:
                 if e.key in (K_LEFT, K_a):
-                    self.character.change_direction_x(-1)
+                    self.character.left = 1
                 if e.key in (K_RIGHT, K_d):
-                    self.character.change_direction_x(1)
+                    self.character.right = 1
                 if e.key in (K_DOWN, K_s):
-                    self.character.change_direction_y(1)
+                    self.character.down = 1
                 if e.key in (K_UP, K_w):
-                    self.character.change_direction_y(-1)
+                    self.character.up = 1
 
                 if e.key in (K_SPACE, K_RETURN):
                     bx, by = self.character.place_bomb(self.bombs, 100, images.laser, images.laser_area, True)
             
             if e.type == KEYUP:
-                if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
-                    self.character.change_direction_x(0)
-                if e.key in (K_DOWN, K_s, K_UP, K_w):
-                    self.character.change_direction_y(0)
+                if e.key in (K_LEFT, K_a):
+                    self.character.left = 0
+                if e.key in (K_RIGHT, K_d):
+                    self.character.right = 0
+                if e.key in (K_DOWN, K_s):
+                    self.character.down = 0
+                if e.key in (K_UP, K_w):
+                    self.character.up = 0
     
 
     def loop(self):
