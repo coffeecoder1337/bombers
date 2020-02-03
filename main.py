@@ -138,6 +138,7 @@ class Game:
                 self.opponent.rect.x, self.opponent.rect.y = data.coords
             if data.event == 'restart':
                 self.restart()
+                self.opponent.rect.x, self.opponent.rect.y = data.coords
 
 
     def check_bombs_to_boom(self):
@@ -212,7 +213,7 @@ def receiving (game, name):
 
 
 if __name__ == "__main__":
-    g = Game() # host="172.105.78.215"
+    g = Game(host="172.105.78.215") # host="172.105.78.215"
     rT = threading.Thread(target = receiving, args = (g, "RecvThread"))
     rT.start()
     g.run()
