@@ -61,17 +61,12 @@ class Game:
             if e.type == KEYDOWN:
                 if e.key in (K_LEFT, K_a):
                     self.character.change_direction_x(-1)
-                    self.character.image = pygame.transform.rotate(self.character.original_image, -90)
                 if e.key in (K_RIGHT, K_d):
                     self.character.change_direction_x(1)
-                    self.character.image = pygame.transform.rotate(self.character.original_image, 90)
                 if e.key in (K_DOWN, K_s):
                     self.character.change_direction_y(1)
-                    self.character.image = pygame.transform.rotate(self.character.original_image, 0)
                 if e.key in (K_UP, K_w):
                     self.character.change_direction_y(-1)
-                    self.character.image = pygame.transform.rotate(self.character.original_image, 180)
-                self.character.rect = self.character.image.get_rect(center=self.character.rect.center)
 
                 if e.key in (K_SPACE, K_RETURN):
                     bx, by = self.character.place_bomb(self.bombs, 100, images.laser, images.laser_area, True)
@@ -87,7 +82,8 @@ class Game:
         self.create_level(self.level_number)
         while self.running:
             self.handler()
-            self.character.move(self.platforms, self.ground_blocks)
+            prev_coords = self.character.move(self.platforms, self.ground_blocks)
+            self.rotate_character(self.character, prev_coords)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
             self.check_lose()
@@ -99,6 +95,18 @@ class Game:
     def check_bombs_to_boom(self):
         for b in self.bombs:
             b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000)
+
+
+    def rotate_character(self, character, prev_coords):
+        if character.rect.x > prev_coords[0]:
+            character.image = pygame.transform.rotate(character.original_image, 90)
+        if character.rect.x < prev_coords[0]:
+            character.image = pygame.transform.rotate(character.original_image, -90)
+        if character.rect.y > prev_coords[1]:
+            character.image = pygame.transform.rotate(character.original_image, 0)
+        if character.rect.y < prev_coords[1]:
+            character.image = pygame.transform.rotate(character.original_image, 180)
+        character.rect = character.image.get_rect(center=character.rect.center)
 
 
     def check_bomb_areas_to_remove(self):
