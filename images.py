@@ -41,11 +41,13 @@ except:
     character_blue = None
 
 try:
-    destructible_block = pygame.image.load('images/blocks/1.png')
+    destructible_block = [
+        pygame.image.load('images/blocks/1.png'),
+        pygame.image.load('images/blocks/2.png'),
+        pygame.image.load('images/blocks/3.png'),
+        pygame.image.load('images/blocks/4.png'),
+        pygame.image.load('images/blocks/5.png'),
+        pygame.image.load('images/blocks/6.png'),
+    ]
 except:
     destructible_block = None
-
-try:
-    destructible_block_2 = pygame.image.load('images/blocks/6.png')
-except:
-    destructible_block_2 = None

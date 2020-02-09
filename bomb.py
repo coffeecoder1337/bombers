@@ -44,7 +44,7 @@ class Bomb(base_game_object.BaseGameObject):
                 x = self.coords_list[0] + i * xy[0]
                 y = self.coords_list[1] + i * xy[1]
                 if level[y][x] not in ignored_blocks:
-                    ba = BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, area_image.get(xy[1]))
+                    ba = BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, area_image.get(abs(xy[1])))
                     dblock = pygame.sprite.spritecollideany(ba, db)
                     if dblock is not None:
                         dblock.destroy()
