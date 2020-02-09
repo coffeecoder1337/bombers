@@ -23,49 +23,35 @@ class Bomb(base_game_object.BaseGameObject):
         self.bombs.remove(self)
         self.all_objects.remove(self)
 
-    def check_to_boom(self, character, bomb_areas, level, delay_before_areas, bomb_lifetime):
+    def check_to_boom(self, character, bomb_areas, level, delay_before_areas, bomb_lifetime, db):
         if pygame.time.get_ticks() - self.spawntime > delay_before_areas  and not self.areas_placed:
-            self.place_areas(level, bomb_areas)
+            self.place_areas(level, bomb_areas, db)
             self.areas_placed = True
         if pygame.time.get_ticks() - self.spawntime > bomb_lifetime:
             self.boom()
 
 
-    def place_areas(self, level, bomb_areas):
+    def place_areas(self, level, bomb_areas, db):
         rotate_image = self.area_image
+        ignored_blocks = ['1']
         if self.rotate_area:
             rotate_image = pygame.transform.rotate(rotate_image, 90)
-        for x in range(1, self.areas_length):
-            x = self.coords_list[0] + x
-            y = self.coords_list[1]
-            if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, rotate_image))
-            else:
-                break
         
-        for x in range(1, self.areas_length):
-            x = self.coords_list[0] + x * (-1)
-            y = self.coords_list[1]
-            if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, rotate_image))
-            else:
-                break
-        
-        for y in range(1, self.areas_length):
-            x = self.coords_list[0]
-            y = self.coords_list[1] + y
-            if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, self.area_image))
-            else:
-                break
-        
-        for y in range(1, self.areas_length):
-            x = self.coords_list[0]
-            y = self.coords_list[1] + y * (-1)
-            if level[y][x] != '1':
-                bomb_areas.add(BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, self.area_image))
-            else:
-                break
+        area_image = {0: rotate_image, 1: self.area_image}
+
+        for xy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            for i in range(1, self.areas_length):
+                x = self.coords_list[0] + i * xy[0]
+                y = self.coords_list[1] + i * xy[1]
+                if level[y][x] not in ignored_blocks:
+                    ba = BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, area_image.get(xy[1]))
+                    dblock = pygame.sprite.spritecollideany(ba, db)
+                    if dblock is not None:
+                        dblock.destroy()
+                    bomb_areas.add(ba)
+                else:
+                    break
+
 
 
 class BombArea(base_game_object.BaseGameObject):

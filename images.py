@@ -40,3 +40,12 @@ try:
 except:
     character_blue = None
 
+try:
+    destructible_block = pygame.image.load('images/blocks/1.png')
+except:
+    destructible_block = None
+
+try:
+    destructible_block_2 = pygame.image.load('images/blocks/6.png')
+except:
+    destructible_block_2 = None

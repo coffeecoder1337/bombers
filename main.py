@@ -17,6 +17,7 @@ class Game:
         self.bombs = pygame.sprite.Group()
         self.bomb_areas = pygame.sprite.Group()
         self.ground_blocks = pygame.sprite.Group()
+        self.destructible_blocks = pygame.sprite.Group()
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = None
@@ -45,6 +46,8 @@ class Game:
                     block.Ground(x, y, self.all_objects, self.ground_blocks)
                 if col == '#':
                     cx, cy = (x, y)
+                if col == '2':
+                    block.DestructibleBlock(x, y, self.all_objects, self.platforms, self.ground_blocks, self.destructible_blocks)
                 x += 30
             y += 30
             x = 0
@@ -98,7 +101,7 @@ class Game:
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
-            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000)
+            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000, self.destructible_blocks)
 
 
     def rotate_character(self, character, prev_coords):
