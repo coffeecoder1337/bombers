@@ -22,10 +22,11 @@ class Constructor:
         self.running = True
 
         self.items = []
+        self.slots = []
 
         hud.HudItem(images.ground, self.items)
         hud.HudItem(images.laser, self.items)
-        self.hud = hud.BaseHudBar(self.items, self.all_objects)
+        self.hud = hud.BaseHudBar(self.items, self.all_objects, self.slots)
         
         self.clock = pygame.time.Clock()
     
@@ -55,8 +56,13 @@ class Constructor:
 
     def handler(self):
         for event in pygame.event.get():
+            mouse = pygame.mouse.get_pos()
             if event.type == QUIT:
                 self.close()
+            
+            if event.type == MOUSEMOTION:
+                for slot in self.slots:
+                    slot.check_intersection(mouse)
 
 
     def save_level(self):
