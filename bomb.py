@@ -62,6 +62,7 @@ class BombArea(base_game_object.BaseGameObject):
         self.bomb_areas = bomb_areas
         self.bomb_areas.add(self)
 
+
     def check_collide(self, character):
         if pygame.sprite.collide_rect(self, character):
             character.hp -= self.force_damage

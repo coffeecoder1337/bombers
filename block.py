@@ -53,6 +53,7 @@ class Explosion(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 60
 
+
     def update(self):
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_rate:
