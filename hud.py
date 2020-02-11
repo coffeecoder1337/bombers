@@ -7,11 +7,12 @@ SLOT_SIZE = 60
 
 
 class HudItem(pygame.sprite.Sprite):
-    def __init__(self, image, items):
+    def __init__(self, image, items, symbol):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
         self.items = items
+        self.symbol = symbol
         self.items.append(self)
 
 
@@ -30,7 +31,7 @@ class HudSlot(pygame.sprite.Sprite):
 
     
     def check_intersection(self, mouse):
-        if self.rect.x < mouse[0] < self.rect.x + self.rect.width and self.rect.y < mouse[1] < self.rect.y + self.rect.height:
+        if self.rect.collidepoint(mouse):
             self.hover = True
         else:
             self.hover = False

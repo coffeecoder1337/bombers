@@ -27,19 +27,21 @@ class Constructor:
         self.opponent = None
         self.running = True
 
+        self.grid = None
         self.items = []
         self.slots = []
+        self.level = []
 
-        hud.HudItem(images.ground, self.items)
-        hud.HudItem(images.block, self.items)
-        hud.HudItem(images.block_2, self.items)
-        hud.HudItem(images.ground_2, self.items)
-        hud.HudItem(images.blue_ground_2, self.items)
-        hud.HudItem(images.blue_ground, self.items)
-        hud.HudItem(images.red_ground_2, self.items)
-        hud.HudItem(images.red_ground, self.items)
-        hud.HudItem(images.character_red, self.items)
-        hud.HudItem(images.character_blue, self.items)
+        hud.HudItem(images.ground, self.items, "0")
+        hud.HudItem(images.block, self.items, "1")
+        hud.HudItem(images.block_2, self.items, "2")
+        hud.HudItem(images.ground_2, self.items, "3")
+        hud.HudItem(images.blue_ground_2, self.items, "4")
+        hud.HudItem(images.blue_ground, self.items, "5")
+        hud.HudItem(images.red_ground_2, self.items, "6")
+        hud.HudItem(images.red_ground, self.items, "7")
+        hud.HudItem(images.character_red, self.items, "#")
+        hud.HudItem(images.character_blue, self.items, "$")
         self.hud = hud.BaseHudBar(self.items, self.all_objects, self.slots)
         self.clock = pygame.time.Clock()
     
@@ -48,18 +50,25 @@ class Constructor:
         surf = pygame.Surface((30 * width, 30 * height))
         surf_rect = surf.get_rect()
         surf_rect.y = hud.SLOT_SIZE
-        surf.set_colorkey((2, 2, 2))
-        surf.fill((100, 0, 100))
         grid = []
         for y in range(height):
             line = []
             for x in range(width):
-                r = pygame.Rect(x * 30, y * 30, 30, 30)
+                i = images.ground
+                r = i.get_rect()
+                r.x, r.y = x * 30, y * 30
                 line.append(r)
-                pygame.draw.rect(surf, pygame.Color('grey'), r, 1)
+                surf.blit(images.ground, r)
             grid.append(line)
-
         return grid, surf, surf_rect
+
+
+    def get_grid_block(self, mouse):
+        if self.grid is not None:
+            for row in self.grid:
+                for col in row:
+                    if col.collidepoint(mouse):
+                        return col.x, col.y
 
 
     def run(self):
@@ -74,7 +83,7 @@ class Constructor:
 
     def draw(self):
         self.screen.fill((255, 255, 255))
-        grid, grid_surf, surf_rect = self.draw_grid()
+        self.grid, grid_surf, surf_rect = self.draw_grid()
         self.screen.blit(grid_surf, surf_rect)
         self.all_objects.update()
         self.all_objects.draw(self.screen)
@@ -96,6 +105,7 @@ class Constructor:
             if event.type == MOUSEMOTION:
                 for slot in self.slots:
                     slot.check_intersection(mouse)
+                self.cur_grid_block = self.get_grid_block(mouse)
 
 
     def save_level(self):
