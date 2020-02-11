@@ -3,6 +3,8 @@ import pygame
 from pygame.locals import *
 
 
+SLOT_SIZE = 60
+
 
 class HudItem(pygame.sprite.Sprite):
     def __init__(self, image, items):
@@ -16,9 +18,10 @@ class HudItem(pygame.sprite.Sprite):
 class HudSlot(pygame.sprite.Sprite):
     def __init__(self, color, slots):
         pygame.sprite.Sprite.__init__(self)
+        self.size = SLOT_SIZE
         self.base_color = color
         self.hover_color = (100, 0, 100)
-        self.image = pygame.Surface((60, 60))
+        self.image = pygame.Surface((self.size, self.size))
         self.image.fill(color)
         self.rect = self.image.get_rect()
         self.hover = False
@@ -45,8 +48,7 @@ class HudSlot(pygame.sprite.Sprite):
 class BaseHudBar(pygame.sprite.Sprite):
     def __init__(self, items, all_objects, slots):
         pygame.sprite.Sprite.__init__(self)
-        self.slot_size = 60
-        self.start = 0, 0
+        self.slot_size = SLOT_SIZE
         self.items = items
         self.all_objects = all_objects
         self.slots = slots

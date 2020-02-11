@@ -6,6 +6,11 @@ except:
     block = None
 
 try:
+    block_2 = pygame.image.load('images/blocks/wall_2.png')
+except:
+    block_2 = None
+
+try:
     laser = pygame.image.load('images/bombs/bomb_laser.png')
 except:
     laser = None
@@ -16,9 +21,34 @@ except:
     laser_area = None
 
 try:
+    ground_2 = pygame.image.load('images/blocks/ground_1grey.png')
+except:
+    ground_2 = None
+
+try:
     ground = pygame.image.load('images/blocks/ground.png')
 except:
     ground = None
+
+try:
+    blue_ground_2 = pygame.image.load('images/blocks/ground_2.png')
+except:
+    blue_ground_2 = None
+
+try:
+    blue_ground = pygame.image.load('images/blocks/ground_1.png')
+except:
+    blue_ground = None
+
+try:
+    red_ground_2 = pygame.image.load('images/blocks/ground_2red.png')
+except:
+    red_ground_2 = None
+
+try:
+    red_ground = pygame.image.load('images/blocks/ground_1red.png')
+except:
+    red_ground = None
 
 try:
     bomb = pygame.image.load('images/blocks/bomb.png')
@@ -31,9 +61,9 @@ except:
     bomb_area = None
 
 try:
-    character = pygame.image.load('images/character/character.png')
+    character_red = pygame.image.load('images/character/character_red.png')
 except:
-    character = None
+    character_red = None
 
 try:
     character_blue = pygame.image.load('images/character/character_blue.png')
