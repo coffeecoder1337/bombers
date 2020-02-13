@@ -33,7 +33,7 @@ class Constructor:
         self.pressed = False
         self.items = []
         self.slots = []
-        self.level = [["0" for x in range(30)] for y in range(15)]
+        self.level = []
 
         ground = hud.HudItem(images.ground, self.items, "0")
         hud.HudItem(images.block, self.items, "1")
@@ -90,6 +90,7 @@ class Constructor:
 
 
     def run(self):
+        self.load_level()
         self.loop()
 
 
@@ -145,8 +146,26 @@ class Constructor:
                 self.pressed = False
 
 
+    def load_level(self):
+        try:
+            with open("level.txt", "r") as f:
+                level = f.readlines()
+                self.level = [list(x.strip()) for x in level]
+                print(self.level)
+        except:
+            self.level = [["0" for x in range(30)] for y in range(15)]
+
+
+
     def save_level(self):
-        pass
+        text = ""
+        with open("level.txt", "w") as f:
+            for row in self.level:
+                for col in row:
+                    text += col
+                text += "\n"
+            f.write(text)
+        f.close()
 
 
     def convert_level_to_file(self):
