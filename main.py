@@ -22,6 +22,17 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = None
         self.level_number = 1
+        self.blocks = {
+            "0": block.Ground,
+            "1": block.Block,
+            "2": block.Block2,
+            "3": block.Ground2,
+            "4": block.BlueGround2,
+            "5": block.BlueGround,
+            "6": block.RedGround2,
+            "7": block.RedGround,
+            "8": block.DestructibleBlock
+        }
 
     
     def read_level_file(self, filename):
@@ -36,22 +47,24 @@ class Game:
     def create_level(self, level_number):
         x = 0
         y = 0
-        cx, cy = (0, 0)
+        ox, oy = 0, 0
+        cx, cy = 0, 0
         self.level = self.read_level_file(f"levels\level{level_number}.txt")
         for row in self.level:
             for col in row:
-                if col == '1':
-                    block.Block(x, y, self.all_objects, self.platforms)
-                if col != '1':
-                    block.Ground(x, y, self.all_objects, self.ground_blocks)
                 if col == '#':
                     cx, cy = (x, y)
-                if col == '2':
-                    block.DestructibleBlock(x, y, self.all_objects, self.platforms, self.ground_blocks, self.destructible_blocks)
+                elif col == '$':
+                    ox, oy = (x, y)
+                else:
+                    self.blocks[col](x, y, self.all_objects, platforms=self.platforms, ground_blocks=self.ground_blocks, destructible_blocks=self.destructible_blocks)
                 x += 30
             y += 30
             x = 0
+        block.BlueGround2(cx, cy, self.all_objects, self.ground_blocks)
+        block.RedGround2(ox, oy, self.all_objects, self.ground_blocks)
         self.character = character.Character(cx, cy, self.all_objects, images.character_blue)
+        self.opponent = character.Character(ox, oy, self.all_objects, images.character_red)
 
 
 

@@ -6,11 +6,6 @@ import pygame
 from pygame.locals import *
 
 
-class GridRect(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((30, 30))
-
 
 class Constructor:
     def __init__(self):
@@ -44,8 +39,8 @@ class Constructor:
         hud.HudItem(images.red_ground_2, self.items, "6")
         hud.HudItem(images.red_ground, self.items, "7")
         hud.HudItem(images.destructible_block[0], self.items, "8")
-        hud.HudItem(images.character_red, self.items, "#")
-        hud.HudItem(images.character_blue, self.items, "$")
+        hud.HudItem(images.character_blue, self.items, "#")
+        hud.HudItem(images.character_red, self.items, "$")
         self.hud = hud.BaseHudBar(self.items, self.all_objects, self.slots)
         self.cur_item = ground
         self.clock = pygame.time.Clock()
@@ -151,7 +146,6 @@ class Constructor:
             with open("level.txt", "r") as f:
                 level = f.readlines()
                 self.level = [list(x.strip()) for x in level]
-                print(self.level)
         except:
             self.level = [["0" for x in range(30)] for y in range(15)]
 

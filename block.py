@@ -7,23 +7,79 @@ from pygame.locals import *
 
 
 class Block(base_game_object.BaseGameObject):
-    def __init__(self, x, y, all_objects, platforms):
+    def __init__(self, x, y, all_objects, platforms=None, ground_blocks=None, destructible_blocks=None):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.block, (100, 100, 100))
         self.platforms = platforms
         self.platforms.add(self)
 
 
 
+class Block2(base_game_object.BaseGameObject):
+    def __init__(self, x, y, all_objects, platforms=None, ground_blocks=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.block_2, (100, 100, 100))
+        self.platforms = platforms
+        self.platforms.add(self)
+
+
+
 class Ground(pygame.sprite.Sprite):
-    def __init__(self, x, y, all_objects, ground_blocks):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.ground, (255, 255, 255))
         self.ground_blocks = ground_blocks
         self.ground_blocks.add(self)
 
 
 
+class Ground2(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.ground_2, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
+
+class BlueGround2(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.blue_ground_2, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
+
+class BlueGround(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.blue_ground, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
+
+class BlueGround(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.blue_ground, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
+
+class RedGround2(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.red_ground_2, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
+
+class RedGround(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.red_ground, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
+
 class DestructibleBlock(pygame.sprite.Sprite):
-    def __init__(self, x, y, all_objects, platforms, ground_blocks, destructible_blocks):
+    def __init__(self, x, y, all_objects, platforms=None, ground_blocks=None, destructible_blocks=None):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.destructible_block[0], (255, 200, 255))
         self.all_objects = all_objects
         self.platforms = platforms
