@@ -27,12 +27,15 @@ class Constructor:
         self.opponent = None
         self.running = True
 
+
+        self.gb = None
         self.grid = None
+        self.pressed = False
         self.items = []
         self.slots = []
-        self.level = []
+        self.level = [["0" for x in range(30)] for y in range(15)]
 
-        hud.HudItem(images.ground, self.items, "0")
+        ground = hud.HudItem(images.ground, self.items, "0")
         hud.HudItem(images.block, self.items, "1")
         hud.HudItem(images.block_2, self.items, "2")
         hud.HudItem(images.ground_2, self.items, "3")
@@ -40,35 +43,50 @@ class Constructor:
         hud.HudItem(images.blue_ground, self.items, "5")
         hud.HudItem(images.red_ground_2, self.items, "6")
         hud.HudItem(images.red_ground, self.items, "7")
+        hud.HudItem(images.destructible_block[0], self.items, "8")
         hud.HudItem(images.character_red, self.items, "#")
         hud.HudItem(images.character_blue, self.items, "$")
         self.hud = hud.BaseHudBar(self.items, self.all_objects, self.slots)
+        self.cur_item = ground
         self.clock = pygame.time.Clock()
     
+
+    def get_item_by_symbol(self, symbol):
+        for item in self.items:
+            if item.symbol == symbol:
+                return item
+
+
+    def place_item(self, mouse, gb):
+        item = self.get_item_by_symbol(self.cur_item.symbol)
+        self.level[int((gb.y)/30)][int(gb.x/30)] = self.cur_item.symbol
+
 
     def draw_grid(self, width=30, height=15):
         surf = pygame.Surface((30 * width, 30 * height))
         surf_rect = surf.get_rect()
         surf_rect.y = hud.SLOT_SIZE
         grid = []
-        for y in range(height):
+        for y, row in enumerate(self.level):
             line = []
-            for x in range(width):
-                i = images.ground
+            for x, col in enumerate(row):
+                i = self.get_item_by_symbol(col).image
                 r = i.get_rect()
                 r.x, r.y = x * 30, y * 30
                 line.append(r)
-                surf.blit(images.ground, r)
+                surf.blit(i, r)
             grid.append(line)
         return grid, surf, surf_rect
 
 
     def get_grid_block(self, mouse):
+        x, y = mouse[0], mouse[1] - 60
         if self.grid is not None:
             for row in self.grid:
                 for col in row:
-                    if col.collidepoint(mouse):
-                        return col.x, col.y
+                    if col.collidepoint(x, y):
+                        # print(col.x, col.y, x, y)
+                        return col
 
 
     def run(self):
@@ -81,10 +99,17 @@ class Constructor:
             self.draw()
 
 
+    def drawing(self):
+        if self.gb is not None:
+            if self.pressed:
+                self.place_item(self.mouse, self.gb)
+
+
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.grid, grid_surf, surf_rect = self.draw_grid()
         self.screen.blit(grid_surf, surf_rect)
+        self.drawing()
         self.all_objects.update()
         self.all_objects.draw(self.screen)
         self.clock.tick(60)
@@ -98,14 +123,26 @@ class Constructor:
 
     def handler(self):
         for event in pygame.event.get():
-            mouse = pygame.mouse.get_pos()
+            self.mouse = pygame.mouse.get_pos()
             if event.type == QUIT:
                 self.close()
             
             if event.type == MOUSEMOTION:
                 for slot in self.slots:
-                    slot.check_intersection(mouse)
-                self.cur_grid_block = self.get_grid_block(mouse)
+                    slot.check_intersection(self.mouse)
+                self.gb = self.get_grid_block(self.mouse)
+                
+            
+            if event.type == MOUSEBUTTONDOWN:
+                self.pressed = True
+                for slot in self.slots:
+                    item = slot.check_intersection(self.mouse)
+                    if item is not None:
+                        self.cur_item = item
+                
+
+            if event.type == MOUSEBUTTONUP:
+                self.pressed = False
 
 
     def save_level(self):

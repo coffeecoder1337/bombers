@@ -27,12 +27,14 @@ class HudSlot(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.hover = False
         self.slots = slots
+        self.item = None
         self.slots.append(self)
 
     
     def check_intersection(self, mouse):
         if self.rect.collidepoint(mouse):
             self.hover = True
+            return self.item
         else:
             self.hover = False
     
@@ -67,6 +69,7 @@ class BaseHudBar(pygame.sprite.Sprite):
             hs = HudSlot((255, 100, 35), self.slots)
             hs.rect.x = x * self.slot_size
             hs.rect.y = self.rect.y
+            hs.item = item
             item.rect.centerx = hs.rect.centerx
             item.rect.centery = hs.rect.centery
             self.all_objects.add(hs)
