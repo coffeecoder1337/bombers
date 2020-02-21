@@ -1,6 +1,7 @@
 import block
 import character
 import images
+import menu
 import pygame
 from pygame.locals import *
 
@@ -33,6 +34,7 @@ class Game:
             "7": block.RedGround,
             "8": block.DestructibleBlock
         }
+        self.menu = menu.Menu(self)
 
     
     def read_level_file(self, filename):
@@ -145,6 +147,7 @@ class Game:
 
     
     def run(self):
+        self.menu.show()
         self.loop()
     
 
