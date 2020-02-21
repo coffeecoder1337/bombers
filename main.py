@@ -110,7 +110,7 @@ class Game:
             self.check_bomb_areas_to_remove()
             self.check_lose()
             self.draw()
-            self.clock.tick(60)
+            self.clock.tick(75)
             pygame.display.update()
 
 

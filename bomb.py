@@ -24,7 +24,7 @@ class Bomb(base_game_object.BaseGameObject):
         self.all_objects.remove(self)
 
     def check_to_boom(self, character, bomb_areas, level, delay_before_areas, bomb_lifetime, db):
-        if pygame.time.get_ticks() - self.spawntime > delay_before_areas  and not self.areas_placed:
+        if pygame.time.get_ticks() - self.spawntime > delay_before_areas and not self.areas_placed:
             self.place_areas(level, bomb_areas, db)
             self.areas_placed = True
         if pygame.time.get_ticks() - self.spawntime > bomb_lifetime:
