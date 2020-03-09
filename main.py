@@ -213,7 +213,7 @@ def receiving (game, name):
 
 
 if __name__ == "__main__":
-    g = Game(host="172.105.78.215") # host="172.105.78.215"
+    g = Game() # host="172.105.78.215"
     rT = threading.Thread(target = receiving, args = (g, "RecvThread"))
     rT.start()
     g.run()
