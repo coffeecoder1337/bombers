@@ -8,6 +8,7 @@ from pygame.locals import *
 class Character(base_game_object.BaseGameObject):
     def __init__(self, x, y, all_objects, image=None):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), image, (0, 0, 0))
+        self.start_pos = (x, y)
         self.speed = 3
         self.hp = 100
         self.original_image = self.image
@@ -16,9 +17,6 @@ class Character(base_game_object.BaseGameObject):
         self.left = 0
         self.up = 0
         self.down = 0
-
-    def get_coords(self):
-        return (self.rect.x, self.rect.y)
 
     def get_current_empty(self, ground_blocks):
         for eb in ground_blocks:
@@ -53,7 +51,7 @@ class Character(base_game_object.BaseGameObject):
 
     def check_hp(self):
         if self.hp <= 0:
-            self.die()
+            # self.die()
             return True
         return False
 
