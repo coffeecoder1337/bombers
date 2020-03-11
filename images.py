@@ -95,3 +95,9 @@ try:
     ]
 except:
     loader = None
+
+
+try:
+    item_holder = pygame.image.load('images/hud/.png')
+except:
+    item_holder = None

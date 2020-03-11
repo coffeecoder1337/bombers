@@ -1,4 +1,6 @@
 import base_game_object
+import hud
+import images
 import loader
 import pygame
 from pygame.locals import *
@@ -51,6 +53,11 @@ class Menu(pygame.sprite.Sprite):
         MenuButton(10, 100, self.buttons, self.image, (150, 50), "Играть", self.close)
         MenuButton(10, 170, self.buttons, self.image, (150, 50), "Помощь", self.show_help)
         MenuButton(10, 240, self.buttons, self.image, (150, 50), "Выход", self.force_close)
+        self.all_objects = pygame.sprite.Group()
+        self.slots = []
+        self.items = []
+        hud.HudItem(images.laser, self.items)
+        self.hud = hud.BaseHudBar(self.items, self.all_objects, self.slots)
 
     
     def show(self):
@@ -110,7 +117,9 @@ class Menu(pygame.sprite.Sprite):
     def draw(self):
         self.game.screen.blit(self.image, (0, 0))
         self.buttons.draw(self.image)
+        self.all_objects.draw(self.image)
         self.buttons.update()
+        self.all_objects.update()
 
 
 

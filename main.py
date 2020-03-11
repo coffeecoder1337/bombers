@@ -44,7 +44,6 @@ class Game:
         self.host = host
         self.port = port
         self.data = None
-        self.moving = False
 
     
     def read_level_file(self, filename):
@@ -168,6 +167,7 @@ class Game:
                 self.opponent.rect.x, self.opponent.rect.y = data.coords
             if data.event == 'restart':
                 self.restart()
+                NetworkObject.NetworkObject(event="move", coords=(self.character.rect.x, self.character.rect.y), hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
                 self.opponent.rect.x, self.opponent.rect.y = data.coords
             if data.event == 'connect':
                 self.game_id = data.game_id
@@ -207,30 +207,30 @@ class Game:
     
     def run(self):
         self.menu.show()
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.client_socket.connect((self.host, self.port))
-
-        NetworkObject.NetworkObject(event="connect").send_to_server(self.client_socket)
 
         if self.running:
+            self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.client_socket.connect((self.host, self.port))
+
+            NetworkObject.NetworkObject(event="connect").send_to_server(self.client_socket)
             while True:
                 if self.data is not None:
                     break
 
-        self.game_id = self.data.game_id
-        if self.data.symbol == "#":
-            self.opponent_symbol = "$"
-            self.opponent_image = images.character_red
-            self.character_image = images.character_blue
-            self.character_symbol = "#"
-        else:
-            self.opponent_symbol = "#"
-            self.character_symbol = "$"
-            self.opponent_image = images.character_blue
-            self.character_image = images.character_red
-            NetworkObject.NetworkObject(event="opponent", game_id=self.game_id).send_to_server(self.client_socket)
+            self.game_id = self.data.game_id
+            if self.data.symbol == "#":
+                self.opponent_symbol = "$"
+                self.opponent_image = images.character_red
+                self.character_image = images.character_blue
+                self.character_symbol = "#"
+            else:
+                self.opponent_symbol = "#"
+                self.character_symbol = "$"
+                self.opponent_image = images.character_blue
+                self.character_image = images.character_red
+                NetworkObject.NetworkObject(event="opponent", game_id=self.game_id).send_to_server(self.client_socket)
 
-        self.loop()
+            self.loop()
     
 
     def restart(self):

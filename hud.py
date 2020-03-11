@@ -7,7 +7,7 @@ SLOT_SIZE = 60
 
 
 class HudItem(pygame.sprite.Sprite):
-    def __init__(self, image, items, symbol):
+    def __init__(self, image, items, symbol=None):
         pygame.sprite.Sprite.__init__(self)
         self.image = image
         self.rect = self.image.get_rect()
@@ -77,6 +77,10 @@ class BaseHudBar(pygame.sprite.Sprite):
 
 
 
+class GameHudBar(BaseHudBar):
+    def __init__(self, items, all_objects, slots):
+        self.image = images.item_holder
+        self.rect = self.image.get_rect()
 
 
 
