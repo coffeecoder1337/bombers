@@ -60,7 +60,7 @@ class Character(base_game_object.BaseGameObject):
         self.kill()
 
 
-    def place_bomb(self, bombs, areas_length=4, image=None, area_image=None, rotate_area=False):
-        b = bomb.Bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs,  areas_length, image, area_image, rotate_area)
-        return (b.rect.x, b.rect.y)
+    def place_bomb(self, bombs, bomb):
+        b = bomb(self.current_empty.rect.x, self.current_empty.rect.y, self.all_objects, bombs)
+        return (b.rect.x, b.rect.y, b)
 

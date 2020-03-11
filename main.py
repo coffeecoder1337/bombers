@@ -22,6 +22,7 @@ class Game:
         self.all_objects = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
         self.bombs = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
         self.bomb_areas = pygame.sprite.Group()
         self.ground_blocks = pygame.sprite.Group()
         self.destructible_blocks = pygame.sprite.Group()
@@ -94,11 +95,14 @@ class Game:
                     self.character.down = 1
                 if e.key in (K_UP, K_w):
                     self.character.up = 1
-
+                
+                if e.key == K_1:
+                    bx, by, b = self.character.place_bomb(self.bombs, bomb.ShootingBomb)
+                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), bomb=bomb.ShootingBomb, hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
 
                 if e.key in (K_SPACE, K_RETURN):
-                    bx, by = self.character.place_bomb(self.bombs, 100, images.laser, images.laser_area, True)
-                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+                    bx, by, b = self.character.place_bomb(self.bombs, bomb.Bomb)
+                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), bomb=bomb.Bomb, hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a):
@@ -161,7 +165,7 @@ class Game:
 
             self.opponent.hp = data.hp
             if data.event == 'bomb':
-                bomb.Bomb(data.coords[0], data.coords[1], self.all_objects, self.bombs, 100, images.laser, images.laser_area, True)
+                data.bomb(data.coords[0], data.coords[1], self.all_objects, self.bombs)
             if data.event == 'move':
                 self.opponent_prev_coords = self.opponent.rect.x, self.opponent.rect.y
                 self.opponent.rect.x, self.opponent.rect.y = data.coords
@@ -175,8 +179,13 @@ class Game:
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
-            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000, self.destructible_blocks)
+            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000, self.destructible_blocks, self.bullets, self.platforms)
 
+        # for b in self.bombs:
+        #     if pygame.time.get_ticks() - b.spawntime > 2000:
+        #             b.shoot(self.bullets, self.character, self.platforms)
+        #             self.all_objects.remove(b)
+        #             self.bombs.remove(b)
 
     def rotate_character(self, character, prev_coords):
         if character.rect.x > prev_coords[0]:
