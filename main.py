@@ -2,12 +2,13 @@ import block
 import bomb
 import character
 import images
+import loader
 import NetworkObject
 import pickle
 import pygame
 import socket
-import menu
 import threading
+import menu
 from pygame.locals import *
 
 pygame.init()
@@ -113,7 +114,16 @@ class Game:
     def loop(self):
         self.create_level(self.level_number)
         if self.character_symbol == "#":
-            while True:
+            l = loader.Loader(self.screen_rect.center)
+            objcts = pygame.sprite.Group()
+            objcts.add(l)
+            while self.running:
+                self.screen.fill((0, 0, 0))
+                objcts.draw(self.screen)
+                objcts.update()
+                self.handler()
+                self.clock.tick(60)
+                pygame.display.update()
                 if self.data.event == "opponent":
                     break
 
@@ -159,6 +169,8 @@ class Game:
             if data.event == 'restart':
                 self.restart()
                 self.opponent.rect.x, self.opponent.rect.y = data.coords
+            if data.event == 'connect':
+                self.game_id = data.game_id
 
 
     def check_bombs_to_boom(self):
@@ -200,9 +212,10 @@ class Game:
 
         NetworkObject.NetworkObject(event="connect").send_to_server(self.client_socket)
 
-        while True:
-            if self.data is not None:
-                break
+        if self.running:
+            while True:
+                if self.data is not None:
+                    break
 
         self.game_id = self.data.game_id
         if self.data.symbol == "#":

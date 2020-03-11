@@ -1,4 +1,5 @@
 import base_game_object
+import loader
 import pygame
 from pygame.locals import *
 
@@ -68,6 +69,8 @@ class Menu(pygame.sprite.Sprite):
 
     def close(self):
         self.running = False
+        # self.game.connect()
+        self.game.running = True
 
 
     def handler(self):

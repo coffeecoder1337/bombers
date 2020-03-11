@@ -81,3 +81,17 @@ try:
     ]
 except:
     destructible_block = None
+
+
+try:
+    loader = [
+        pygame.image.load('images/loader/1.png'),
+        pygame.image.load('images/loader/2.png'),
+        pygame.image.load('images/loader/3.png'),
+        pygame.image.load('images/loader/4.png'),
+        pygame.image.load('images/loader/5.png'),
+        pygame.image.load('images/loader/6.png'),
+        pygame.image.load('images/loader/7.png'),
+    ]
+except:
+    loader = None
