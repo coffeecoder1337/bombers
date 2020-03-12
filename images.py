@@ -119,3 +119,50 @@ try:
     item_holder2 = pygame.image.load('images/hud/item_holder2.png')
 except:
     item_holder2 = None
+
+
+try:
+    background = [
+        pygame.image.load('images/menu/background/0.gif'),
+        pygame.image.load('images/menu/background/1.gif'),
+        pygame.image.load('images/menu/background/2.gif'),
+        pygame.image.load('images/menu/background/3.gif'),
+        pygame.image.load('images/menu/background/4.gif'),
+        pygame.image.load('images/menu/background/5.gif'),
+        pygame.image.load('images/menu/background/6.gif'),
+        pygame.image.load('images/menu/background/7.gif'),
+        pygame.image.load('images/menu/background/8.gif'),
+        pygame.image.load('images/menu/background/9.gif'),
+        pygame.image.load('images/menu/background/10.gif'),
+        pygame.image.load('images/menu/background/11.gif'),
+        pygame.image.load('images/menu/background/12.gif'),
+        pygame.image.load('images/menu/background/13.gif'),
+        pygame.image.load('images/menu/background/14.gif'),
+        pygame.image.load('images/menu/background/15.gif'),
+        pygame.image.load('images/menu/background/16.gif'),
+        pygame.image.load('images/menu/background/17.gif'),
+        pygame.image.load('images/menu/background/18.gif'),
+        pygame.image.load('images/menu/background/19.gif'),
+        pygame.image.load('images/menu/background/20.gif'),
+        pygame.image.load('images/menu/background/21.gif'),
+        pygame.image.load('images/menu/background/22.gif'),
+        pygame.image.load('images/menu/background/23.gif'),
+        pygame.image.load('images/menu/background/24.gif'),
+        pygame.image.load('images/menu/background/25.gif'),
+        pygame.image.load('images/menu/background/26.gif'),
+        pygame.image.load('images/menu/background/27.gif'),
+        pygame.image.load('images/menu/background/28.gif'),
+        pygame.image.load('images/menu/background/29.gif'),
+        pygame.image.load('images/menu/background/30.gif'),
+        pygame.image.load('images/menu/background/31.gif'),
+        pygame.image.load('images/menu/background/32.gif'),
+        pygame.image.load('images/menu/background/33.gif'),
+        pygame.image.load('images/menu/background/34.gif'),
+        pygame.image.load('images/menu/background/35.gif'),
+        pygame.image.load('images/menu/background/36.gif'),
+        pygame.image.load('images/menu/background/37.gif'),
+        pygame.image.load('images/menu/background/38.gif'),
+        pygame.image.load('images/menu/background/39.gif'),
+    ]
+except:
+    background = None

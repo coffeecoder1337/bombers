@@ -1,3 +1,4 @@
+import background
 import base_game_object
 import loader
 import pygame
@@ -42,11 +43,14 @@ class Menu(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.size = game.screen_rect.width, game.screen_rect.height
         self.image = pygame.Surface(self.size)
-        self.image.fill((100, 100, 100))
+        # self.image.fill((100, 100, 100))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 0, 0
         self.running = True
         self.game = game
+        self.background = background.Background(self.rect.center)
+        self.all_objects = pygame.sprite.Group()
+        self.all_objects.add(self.background)
         self.buttons = pygame.sprite.Group()
         MenuButton(10, 100, self.buttons, self.image, (150, 50), "Играть", self.close)
         MenuButton(10, 170, self.buttons, self.image, (150, 50), "Помощь", self.show_help)
@@ -108,7 +112,9 @@ class Menu(pygame.sprite.Sprite):
 
     def draw(self):
         self.game.screen.blit(self.image, (0, 0))
+        self.all_objects.draw(self.image)
         self.buttons.draw(self.image)
+        self.all_objects.update()
         self.buttons.update()
 
 

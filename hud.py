@@ -101,11 +101,11 @@ class GameHudBar(BaseHudBar):
                 gutter = 0
             else:
                 img = images.item_holder2
-                gutter = 5
+                gutter = 3
             hs = GameHudSlot(self.slots, img)
             hs.rect.x = self.width + hs.rect.width
             hs.rect.y = self.ypos
-            self.width += hs.rect.width - 8
+            self.width += hs.rect.width - 5
             hs.item = item
             item.rect.centerx = hs.rect.centerx + gutter
             item.rect.centery = hs.rect.centery
