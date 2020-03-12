@@ -32,6 +32,13 @@ class Game:
         self.level = None
         self.level_number = 1
 
+        self.bomb_items = {
+            K_1: bomb.Bomb,
+            K_2: bomb.ShootingBomb
+        }
+
+        self.current_bomb = K_1
+
         self.slots = []
         self.items = []
         hud.HudItem(images.laser, self.items)
@@ -104,13 +111,12 @@ class Game:
                 if e.key in (K_UP, K_w):
                     self.character.up = 1
                 
-                if e.key == K_1:
-                    bx, by, b = self.character.place_bomb(self.bombs, bomb.ShootingBomb)
-                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), bomb=bomb.ShootingBomb, hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+                if e.key in (K_1, K_2):
+                    self.current_bomb = e.key
 
                 if e.key in (K_SPACE, K_RETURN):
-                    bx, by, b = self.character.place_bomb(self.bombs, bomb.Bomb)
-                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), bomb=bomb.Bomb, hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
+                    bx, by, b = self.character.place_bomb(self.bombs, self.bomb_items[self.current_bomb])
+                    NetworkObject.NetworkObject(event="bomb", coords=(bx, by), bomb=self.bomb_items[self.current_bomb], hp=self.character.hp, game_id=self.game_id).send_to_server(self.client_socket)
             
             if e.type == KEYUP:
                 if e.key in (K_LEFT, K_a):
