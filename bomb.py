@@ -71,7 +71,7 @@ class BombArea(base_game_object.BaseGameObject):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, all_objects, bullets, character, dirx, diry, platforms):
+    def __init__(self, x, y, all_objects, bullets, character, dirx, diry, platforms, opponent):
         pygame.sprite.Sprite.__init__(self)
         if diry == -1:
             self.image = images.bullet
@@ -88,8 +88,9 @@ class Bullet(pygame.sprite.Sprite):
         self.dirx = dirx
         self.diry = diry
         self.speed = 5
-        self.force_damage = 100
+        self.force_damage = 50
         self.character = character
+        self.opponent = opponent
         self.all_objects =  all_objects
         self.bullets.add(self)
         self.all_objects.add(self)
@@ -104,6 +105,9 @@ class Bullet(pygame.sprite.Sprite):
         self.move()
         if pygame.sprite.collide_rect(self, self.character):
             self.character.hp -= self.force_damage
+        if pygame.sprite.collide_rect(self, self.character) or pygame.sprite.collide_rect(self, self.opponent):
+            self.bullets.remove(self)
+            self.all_objects.remove(self)
         if pygame.sprite.spritecollide(self, self.platforms, False):
             self.bullets.remove(self)
             self.all_objects.remove(self)
@@ -130,17 +134,17 @@ class ShootingBomb(pygame.sprite.Sprite):
         self.all_objects.remove(self)
 
 
-    def check_to_boom(self, character, bomb_areas, level, delay_before_areas, bomb_lifetime, db, bullets, platforms):
+    def check_to_boom(self, character, bomb_areas, level, delay_before_areas, bomb_lifetime, db, bullets, platforms, opponent):
         if pygame.time.get_ticks() - self.spawntime > delay_before_areas and not self.shooted:
-            self.shoot(bullets, character, platforms)
+            self.shoot(bullets, character, platforms, opponent)
             self.shooted = True
         if pygame.time.get_ticks() - self.spawntime > bomb_lifetime:
             self.boom()
 
 
-    def shoot(self, bullets, character, platforms):
+    def shoot(self, bullets, character, platforms, opponent):
         for x in [1, -1]:
-            b = Bullet(self.rect.centerx, self.rect.centery, self.all_objects, bullets, character, x, 0, platforms)
+            b = Bullet(self.rect.centerx, self.rect.centery, self.all_objects, bullets, character, x, 0, platforms, opponent)
         
         for y in [1, -1]:
-            b = Bullet(self.rect.centerx, self.rect.centery, self.all_objects, bullets, character, 0, y, platforms)
+            b = Bullet(self.rect.centerx, self.rect.centery, self.all_objects, bullets, character, 0, y, platforms, opponent)

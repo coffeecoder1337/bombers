@@ -98,12 +98,6 @@ except:
 
 
 try:
-    item_holder = pygame.image.load('images/hud/.png')
-except:
-    item_holder = None
-
-
-try:
     shooting_bomb = pygame.image.load('images/bombs/bomb2.png')
 except:
     shooting_bomb = None
@@ -113,3 +107,15 @@ try:
     bullet = pygame.image.load('images/bombs/bullet.png')
 except:
     bullet = None
+
+
+try:
+    item_holder1 = pygame.image.load('images/hud/item_holder1.png')
+except:
+    item_holder1 = None
+
+
+try:
+    item_holder2 = pygame.image.load('images/hud/item_holder2.png')
+except:
+    item_holder2 = None

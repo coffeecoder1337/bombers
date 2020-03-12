@@ -42,6 +42,7 @@ class Constructor:
         hud.HudItem(images.character_blue, self.items, "#")
         hud.HudItem(images.character_red, self.items, "$")
         self.hud = hud.BaseHudBar(self.items, self.all_objects, self.slots)
+        self.hud.draw_items()
         self.cur_item = ground
         self.clock = pygame.time.Clock()
     

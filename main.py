@@ -1,6 +1,7 @@
 import block
 import bomb
 import character
+import hud
 import images
 import loader
 import NetworkObject
@@ -30,6 +31,13 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = None
         self.level_number = 1
+
+        self.slots = []
+        self.items = []
+        hud.HudItem(images.laser, self.items)
+        hud.HudItem(images.shooting_bomb, self.items)
+        self.hud = hud.GameHudBar(self.items, self.all_objects, self.slots)
+
         self.blocks = {
             "0": block.Ground,
             "1": block.Block,
@@ -116,6 +124,7 @@ class Game:
 
     def loop(self):
         self.create_level(self.level_number)
+        self.hud.draw_items()
         if self.character_symbol == "#":
             l = loader.Loader(self.screen_rect.center)
             objcts = pygame.sprite.Group()
@@ -179,13 +188,8 @@ class Game:
 
     def check_bombs_to_boom(self):
         for b in self.bombs:
-            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000, self.destructible_blocks, self.bullets, self.platforms)
+            b.check_to_boom(self.character, self.bomb_areas, self.level, 2000, 3000, self.destructible_blocks, self.bullets, self.platforms, self.opponent)
 
-        # for b in self.bombs:
-        #     if pygame.time.get_ticks() - b.spawntime > 2000:
-        #             b.shoot(self.bullets, self.character, self.platforms)
-        #             self.all_objects.remove(b)
-        #             self.bombs.remove(b)
 
     def rotate_character(self, character, prev_coords):
         if character.rect.x > prev_coords[0]:

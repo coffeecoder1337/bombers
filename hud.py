@@ -52,16 +52,15 @@ class BaseHudBar(pygame.sprite.Sprite):
     def __init__(self, items, all_objects, slots):
         pygame.sprite.Sprite.__init__(self)
         self.slot_size = SLOT_SIZE
+        self.image = pygame.Surface((self.slot_size, self.slot_size))
         self.items = items
         self.all_objects = all_objects
         self.slots = slots
-        self.size = self.slot_size * len(self.items)
-        self.image = pygame.Surface((self.size, 60))
-        self.image.fill((0, 0, 0))
-        self.image.set_alpha(100)
         self.rect = self.image.get_rect()
-        self.draw_items()
-        self.all_objects.add(self)
+        self.size = self.slot_size * len(self.items)
+        self.ypos = 10
+        self.width = 0
+        self.count = 0
 
 
     def draw_items(self):
@@ -77,10 +76,37 @@ class BaseHudBar(pygame.sprite.Sprite):
 
 
 
+class GameHudSlot(pygame.sprite.Sprite):
+    def __init__(self, slots, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.scale(img, (60, 60))
+        self.rect = self.image.get_rect()
+        self.slots = slots
+        self.item = None
+        self.slots.append(self)
+
+
 class GameHudBar(BaseHudBar):
     def __init__(self, items, all_objects, slots):
-        self.image = images.item_holder
-        self.rect = self.image.get_rect()
+        BaseHudBar.__init__(self, items, all_objects, slots)
+        self.slots = slots
+        self.items = items
+        self.all_objects = all_objects
+    
+
+    def draw_items(self):
+        for item in self.items:
+            img = images.item_holder1
+            hs = GameHudSlot(self.slots, img)
+            hs.rect.x = self.width + hs.rect.width
+            hs.rect.y = self.ypos
+            self.width += hs.rect.width + 10
+            hs.item = item
+            item.rect.centerx = hs.rect.centerx
+            item.rect.centery = hs.rect.centery
+            self.count += 1
+            self.all_objects.add(hs)
+            self.all_objects.add(item)
 
 
 
