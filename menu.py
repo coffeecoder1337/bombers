@@ -34,19 +34,31 @@ class MenuButton(pygame.sprite.Sprite):
 
 
 
+class HelpPage(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = images.help_page
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
 class Menu(pygame.sprite.Sprite):
     def __init__(self, game):
         pygame.sprite.Sprite.__init__(self)
         self.size = game.screen_rect.width, game.screen_rect.height
         self.image = pygame.Surface(self.size)
-        # self.image.fill((100, 100, 100))
+        self.image.fill((0, 0, 0))
+        self.image.set_alpha(150)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 0, 0
         self.running = True
+        self.showing_help = False
         self.game = game
-        self.background = background.Background(self.rect.center)
         self.all_objects = pygame.sprite.Group()
+        self.background = background.Background(self.rect.center)
         self.all_objects.add(self.background)
+        self.help_page = HelpPage(0, 0)
         self.buttons = pygame.sprite.Group()
         MenuButton(10, 100, self.buttons, self.image, (150, 50), "Играть", self.close, images.play_btn)
         MenuButton(10, 170, self.buttons, self.image, (150, 50), "Помощь", self.show_help, images.help_btn)
@@ -59,7 +71,10 @@ class Menu(pygame.sprite.Sprite):
 
 
     def show_help(self):
-        pass
+        if self.showing_help:
+            self.showing_help = False
+        else:
+            self.showing_help = True
 
 
     def force_close(self):
@@ -107,10 +122,12 @@ class Menu(pygame.sprite.Sprite):
 
 
     def draw(self):
-        self.game.screen.blit(self.image, (0, 0))
-        self.all_objects.draw(self.image)
-        self.buttons.draw(self.image)
+        self.all_objects.draw(self.game.screen)
         self.all_objects.update()
+        self.game.screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.showing_help:
+            self.game.screen.blit(self.help_page.image, (0, 0))
+        self.buttons.draw(self.game.screen)
         self.buttons.update()
 
 

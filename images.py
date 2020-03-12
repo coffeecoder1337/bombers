@@ -82,7 +82,6 @@ try:
 except:
     destructible_block = None
 
-
 try:
     loader = [
         pygame.image.load('images/loader/1.png'),
@@ -96,30 +95,25 @@ try:
 except:
     loader = None
 
-
 try:
     shooting_bomb = pygame.image.load('images/bombs/bomb2.png')
 except:
     shooting_bomb = None
-
 
 try:
     bullet = pygame.image.load('images/bombs/bullet.png')
 except:
     bullet = None
 
-
 try:
     item_holder1 = pygame.image.load('images/hud/item_holder1.png')
 except:
     item_holder1 = None
 
-
 try:
     item_holder2 = pygame.image.load('images/hud/item_holder2.png')
 except:
     item_holder2 = None
-
 
 try:
     background = [
@@ -167,7 +161,6 @@ try:
 except:
     background = None
 
-
 try:
     play_btn = [
         pygame.image.load('images/menu/buttons/play1.png'),
@@ -175,7 +168,6 @@ try:
     ]
 except:
     play_btn = None
-
 
 try:
     help_btn = [
@@ -185,7 +177,6 @@ try:
 except:
     help_btn = None
 
-
 try:
     quit_btn = [
         pygame.image.load('images/menu/buttons/quit1.png'),
@@ -193,3 +184,8 @@ try:
     ]
 except:
     quit_btn = None
+
+try:
+    help_page = pygame.image.load('images/menu/help_page/help.png')
+except:
+    help_page = None
