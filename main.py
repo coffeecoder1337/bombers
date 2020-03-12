@@ -18,7 +18,7 @@ pygame.init()
 class Game:
     def __init__(self, host = 'localhost', port = 5005):
         pygame.display.set_caption('Bombers')
-        self.screen = pygame.display.set_mode((900, 450))
+        self.screen = pygame.display.set_mode((900, 530))
         self.screen_rect = self.screen.get_rect()
         self.all_objects = pygame.sprite.Group()
         self.platforms = pygame.sprite.Group()
@@ -73,7 +73,7 @@ class Game:
 
     def create_level(self, level_number):
         x = 0
-        y = 0
+        y = 80
         ox, oy = 0, 0
         cx, cy = 0, 0
         self.level = self.read_level_file(f"levels\level{level_number}.txt")
@@ -219,7 +219,7 @@ class Game:
 
 
     def draw(self):
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((0, 0, 0))
         self.all_objects.update()
         self.all_objects.draw(self.screen)
 
@@ -254,6 +254,10 @@ class Game:
 
     def restart(self):
         self.character.rect.x, self.character.rect.y = self.character.start_pos
+        # self.all_objects.remove(self.bombs, self.bullets, self.bomb_areas)
+        # self.bombs.empty()
+        # self.bullets.empty()
+        # self.bomb_areas.empty()
         self.character.hp = 100
 
 

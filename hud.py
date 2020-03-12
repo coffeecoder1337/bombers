@@ -96,13 +96,18 @@ class GameHudBar(BaseHudBar):
 
     def draw_items(self):
         for item in self.items:
-            img = images.item_holder1
+            if self.count == 0:
+                img = images.item_holder1
+                gutter = 0
+            else:
+                img = images.item_holder2
+                gutter = 5
             hs = GameHudSlot(self.slots, img)
             hs.rect.x = self.width + hs.rect.width
             hs.rect.y = self.ypos
-            self.width += hs.rect.width + 10
+            self.width += hs.rect.width - 8
             hs.item = item
-            item.rect.centerx = hs.rect.centerx
+            item.rect.centerx = hs.rect.centerx + gutter
             item.rect.centery = hs.rect.centery
             self.count += 1
             self.all_objects.add(hs)

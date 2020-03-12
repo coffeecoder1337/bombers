@@ -40,7 +40,7 @@ class MenuButton(pygame.sprite.Sprite):
 class Menu(pygame.sprite.Sprite):
     def __init__(self, game):
         pygame.sprite.Sprite.__init__(self)
-        self.size = (900, 450)
+        self.size = game.screen_rect.width, game.screen_rect.height
         self.image = pygame.Surface(self.size)
         self.image.fill((100, 100, 100))
         self.rect = self.image.get_rect()

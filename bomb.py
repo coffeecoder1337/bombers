@@ -11,7 +11,7 @@ class Bomb(base_game_object.BaseGameObject):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (self.size, self.size), images.laser, color = (200, 50, 50))
         self.bombs = bombs
         self.spawntime = pygame.time.get_ticks()
-        self.coords_list = [int(self.rect.x / self.size), int(self.rect.y / self.size)]
+        self.coords_list = [int(self.rect.x / self.size), int((self.rect.y - 80) / self.size)]
         self.areas_length = 100
         self.area_image = images.laser_area
         self.rotate_area = True
@@ -45,7 +45,7 @@ class Bomb(base_game_object.BaseGameObject):
                 y = self.coords_list[1] + i * xy[1]
                 try:
                     if level[y][x] not in ignored_blocks:
-                        ba = BombArea(x * self.size, y * self.size, self.all_objects, bomb_areas, area_image.get(abs(xy[1])))
+                        ba = BombArea(x * self.size, y * self.size + 80, self.all_objects, bomb_areas, area_image.get(abs(xy[1])))
                         dblock = pygame.sprite.spritecollideany(ba, db)
                         if dblock is not None:
                             dblock.destroy()
