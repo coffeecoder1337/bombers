@@ -11,6 +11,7 @@ class Character(base_game_object.BaseGameObject):
         self.start_pos = (x, y)
         self.speed = 3
         self.hp = 100
+        self.score = 0
         self.original_image = self.image
         self.current_empty = None
         self.right = 0

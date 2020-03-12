@@ -49,6 +49,7 @@ class Bomb(base_game_object.BaseGameObject):
                         dblock = pygame.sprite.spritecollideany(ba, db)
                         if dblock is not None:
                             dblock.destroy()
+                            break
                         bomb_areas.add(ba)
                     else:
                         break

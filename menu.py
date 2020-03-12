@@ -92,13 +92,7 @@ class Menu(pygame.sprite.Sprite):
             mouse = pygame.mouse.get_pos()
             if event.type == QUIT:
                 self.force_close()
-            
-            if event.type == KEYDOWN:
-                if event.key in [K_RETURN]:
-                    self.close()
-
-                if event.key in [K_ESCAPE]:
-                    self.force_close()
+                
 
             if event.type == MOUSEMOTION:
                 for button in self.buttons:
@@ -129,9 +123,4 @@ class Menu(pygame.sprite.Sprite):
             self.game.screen.blit(self.help_page.image, (0, 0))
         self.buttons.draw(self.game.screen)
         self.buttons.update()
-
-
-
-
-
 
