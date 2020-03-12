@@ -1,22 +1,19 @@
 import background
 import base_game_object
+import images
 import loader
 import pygame
 from pygame.locals import *
 
 
 class MenuButton(pygame.sprite.Sprite):
-    def __init__(self, x, y, buttons, screen, size, text, on_press, color=(20, 20, 20), hover_color=(70, 70, 70), text_color=(255, 255, 255), font_size=21):
+    def __init__(self, x, y, buttons, screen, size, text, on_press, img):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface(size)
-        self.image.fill(color)
-        self.main_color = color
-        self.hover_color = hover_color
+        self.img = img
+        self.image = self.img[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.font = pygame.font.SysFont('Arial', font_size)
-        self.text = self.font.render(text, 1, text_color)
         self.screen = screen
         self.hover = False
         self.on_press = on_press
@@ -31,10 +28,9 @@ class MenuButton(pygame.sprite.Sprite):
 
     def update(self):
         if self.hover:
-            self.image.fill(self.hover_color)
+            self.image = self.img[1]
         else:
-            self.image.fill(self.main_color)
-        self.screen.blit(self.text, self.text.get_rect(center=self.rect.center))
+            self.image = self.img[0]
 
 
 
@@ -52,9 +48,9 @@ class Menu(pygame.sprite.Sprite):
         self.all_objects = pygame.sprite.Group()
         self.all_objects.add(self.background)
         self.buttons = pygame.sprite.Group()
-        MenuButton(10, 100, self.buttons, self.image, (150, 50), "Играть", self.close)
-        MenuButton(10, 170, self.buttons, self.image, (150, 50), "Помощь", self.show_help)
-        MenuButton(10, 240, self.buttons, self.image, (150, 50), "Выход", self.force_close)
+        MenuButton(10, 100, self.buttons, self.image, (150, 50), "Играть", self.close, images.play_btn)
+        MenuButton(10, 170, self.buttons, self.image, (150, 50), "Помощь", self.show_help, images.help_btn)
+        MenuButton(10, 240, self.buttons, self.image, (150, 50), "Выход", self.force_close, images.quit_btn)
         
     
     def show(self):

@@ -166,3 +166,30 @@ try:
     ]
 except:
     background = None
+
+
+try:
+    play_btn = [
+        pygame.image.load('images/menu/buttons/play1.png'),
+        pygame.image.load('images/menu/buttons/play2.png'),
+    ]
+except:
+    play_btn = None
+
+
+try:
+    help_btn = [
+        pygame.image.load('images/menu/buttons/help1.png'),
+        pygame.image.load('images/menu/buttons/help2.png'),
+    ]
+except:
+    help_btn = None
+
+
+try:
+    quit_btn = [
+        pygame.image.load('images/menu/buttons/quit1.png'),
+        pygame.image.load('images/menu/buttons/quit2.png'),
+    ]
+except:
+    quit_btn = None
