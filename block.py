@@ -29,6 +29,19 @@ class Ground(pygame.sprite.Sprite):
         self.ground_blocks.add(self)
 
 
+class BlueSpawn(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.spawn_blue, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+class RedSpawn(pygame.sprite.Sprite):
+    def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):
+        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30), images.spawn_red, (255, 255, 255))
+        self.ground_blocks = ground_blocks
+        self.ground_blocks.add(self)
+
+
 
 class Ground2(pygame.sprite.Sprite):
     def __init__(self, x, y, all_objects, ground_blocks=None, platforms=None, destructible_blocks=None):

@@ -189,3 +189,13 @@ try:
     help_page = pygame.image.load('images/menu/help_page/help.png')
 except:
     help_page = None
+
+try:
+    spawn_blue = pygame.image.load('images/blocks/spawn_blue.png')
+except:
+    spawn_blue = None
+
+try:
+    spawn_red = pygame.image.load('images/blocks/spawn_red.png')
+except:
+    spawn_red = None

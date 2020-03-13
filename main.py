@@ -111,8 +111,14 @@ class Game:
                 x += 30
             y += 30
             x = 0
-        block.Ground(cx, cy, self.all_objects, self.ground_blocks)
-        block.Ground(ox, oy, self.all_objects, self.ground_blocks)
+        if self.character_symbol == "#":
+            sx_character, sy_character = cx, cy
+            sx_opponent, sy_opponent = ox, oy
+        else:
+            sx_character, sy_character = ox, oy
+            sx_opponent, sy_opponent = cx, cy
+        block.BlueSpawn(sx_character, sy_character, self.all_objects, self.ground_blocks)
+        block.RedSpawn(sx_opponent, sy_opponent, self.all_objects, self.ground_blocks)
         self.character = character.Character(cx, cy, self.all_objects, self.character_image)
         self.opponent = character.Character(ox, oy, self.all_objects, self.opponent_image)
         self.hud = hud.GameHudBar(self.items, self.all_objects, self.slots, self)
@@ -293,6 +299,7 @@ class Game:
                     break
 
             self.game_id = self.data.game_id
+            self.level_number = self.data.level
             if self.data.symbol == "#":
                 self.opponent_symbol = "$"
                 self.opponent_image = images.character_red

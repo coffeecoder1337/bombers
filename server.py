@@ -1,4 +1,5 @@
 import pickle
+import random
 import socket
 
 
@@ -7,6 +8,7 @@ class Server:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.bind(('', port))
         self.games = 0
+        self.last_level = None
         self.clients = dict()
 
     def loop(self):
@@ -27,13 +29,16 @@ class Server:
                     except:
                         last_game_length = 0
                     if last_game_length in [0, 2]:
+                        self.last_level = random.randint(1, 3)
                         self.games += 1
                         self.clients[self.games] = []
                         self.clients[self.games].append(adress)
                         network_object.symbol = "#"
+                        network_object.level = self.last_level
                     else:
                         self.clients[self.games].append(adress)
                         network_object.symbol = "$"
+                        network_object.level = self.last_level
                     network_object.game_id = self.games
                     network_object.send_to_client(self.server_socket, adress)
                     
