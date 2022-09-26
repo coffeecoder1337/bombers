@@ -4,15 +4,15 @@ import bomb
 from pygame.locals import *
 
 
-class Character(base_game_object.BaseGameObject):
-    def __init__(self, x, y, all_objects):
+class BaseCharacter(base_game_object.BaseGameObject):
+    def __init__(self, x, y, all_objects, id):
         base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30))
         self.speed = 3
         self.directionx = 0
         self.directiony = 0
         self.hp = 100
         self.current_empty = None
-
+    
     def get_current_empty(self, empty_blocks):
         for eb in empty_blocks:
             if pygame.sprite.collide_rect(self, eb):
@@ -66,7 +66,27 @@ class Character(base_game_object.BaseGameObject):
 
 
 
-class Enemy(base_game_object.BaseGameObject):
-    def __init__(self, x, y, all_objects):
-        base_game_object.BaseGameObject.__init__(self, x, y, all_objects, (30, 30))
-        self.image.fill((10, 200, 10))
+class Character(BaseCharacter):
+    def __init__(self, x, y, all_objects, id):
+        BaseCharacter.__init__(self, x, y, all_objects, id)
+        self.id = id
+        if self.id % 2 == 1:
+            color = (19, 127, 240)
+        else:
+            color = (240, 19, 69)
+        self.image.fill(color)
+
+    
+
+
+
+class Enemy(BaseCharacter):
+    def __init__(self, x, y, all_objects, id):
+        BaseCharacter.__init__(self, x, y, all_objects, id)
+        self.id = id
+        if self.id % 2 == 1:
+            color = (240, 19, 69)
+        else:
+            color = (19, 127, 240)
+        self.image.fill(color)
+        

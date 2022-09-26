@@ -2,40 +2,11 @@ import pygame
 import character
 import block
 import socket
-import select
+from select import select
 import pickle
 from pygame.locals import *
 
 pygame.init()
-
-
-'''
-Данные, полученные от сервера при подключении
-{
-    'id': 4,
-    'game_id': 4234,
-    'level': [
-        "111111111111111111111111111111",
-        "100000010000000100000000100001",
-        "111111010111110101111110111101",
-        "100000010100000000000010000001",
-        "101111010101111101011011111101",
-        "101000010101000001000000000001",
-        "101011110100010101011010110101",
-        "100010000001000101000010100101",
-        "111010110101111101111110101101",
-        "101010110100000000100000000001",
-        "101010110101111110111101011101",
-        "101000000100000010000001010001",
-        "101111101111111010111101010101",
-        "100000000000000010000000000001",
-        "111111111111111111111111111111"
-    ],
-    'spawn_coords': [123, 445],
-    'enemy_spawn_coords': [4345, 5435]
-}
-
-'''
 
 
 class Game:
@@ -52,18 +23,37 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()
         self.level = None
+        self.character = None
+        self.enemy = None
 
+        self.to_monitor = []
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((ip, 5001))
-        data = self.sock.recv(4096)
-        self.id = self.parse_id(data)
+        data = pickle.loads(self.sock.recv(4096))
+        self.id = None
+        self.parse_data(data)
+        self.to_monitor.append(self.sock)
+        self.sock.setblocking(0)
 
 
-    def parse_id(self, id):
-        id = id.decode().split()
-        if id[0] == 'id':
-            id = int(id[1])
-        return id
+    def parse_data(self, data):
+        if data['type'] == 'connected':
+            print(data)
+            self.pause = data['pause']
+            self.id = data['id']
+            self.level = data['level']
+            self.character = character.Character(data['spawn_coords'][0], data['spawn_coords'][1], self.all_objects, self.id)
+            self.enemy = character.Enemy(data['enemy_spawn_coords'][0], data['enemy_spawn_coords'][1], self.all_objects, self.id)
+        
+        if data['type'] == 'change_direction':
+            if data['direction_x'] is not None:
+                self.enemy.change_direction_x(data['direction_x'])
+            if data['direction_y'] is not None:
+                self.enemy.change_direction_y(data['direction_y'])
+        
+        if data['type'] == 'unpause':
+            print(data)
+            self.pause = False
 
 
     def create_level(self, level):
@@ -75,16 +65,6 @@ class Game:
                     block.Block(x, y, self.all_objects, self.platforms)
                 if col != '1':
                     block.Empty(x, y, self.empty_blocks)
-                if col == '2':
-                    if self.id == 0:
-                        self.character = character.Character(x, y, self.all_objects)
-                    else:
-                        self.enemy = character.Enemy(x, y, self.all_objects)
-                if col == '3':
-                    if self.id == 1:
-                        self.character = character.Character(x, y, self.all_objects)
-                    else:
-                        self.enemy = character.Enemy(x, y, self.all_objects)
                 x += 30
             y += 30
             x = 0
@@ -96,30 +76,64 @@ class Game:
                 self.running = False
             
             if e.type == KEYDOWN:
+                dirx = None
+                diry = None
                 if e.key in (K_LEFT, K_a):
                     self.character.change_direction_x(-1)
+                    dirx = -1
                 if e.key in (K_RIGHT, K_d):
                     self.character.change_direction_x(1)
+                    dirx = 1
                 if e.key in (K_DOWN, K_s):
                     self.character.change_direction_y(1)
+                    diry = 1
                 if e.key in (K_UP, K_w):
                     self.character.change_direction_y(-1)
+                    diry = -1
+                data = {
+                    'type': 'change_direction',
+                    'id': self.id,
+                    'direction_x': dirx,
+                    'direction_y': diry
+                }
+                self.sock.send(pickle.dumps(data))
 
                 if e.key in (K_SPACE, K_RETURN):
                     self.character.place_bomb(self.bombs)
             
             if e.type == KEYUP:
+                dirx = None
+                diry = None
                 if e.key in (K_LEFT, K_a, K_RIGHT, K_d):
                     self.character.change_direction_x(0)
+                    dirx = 0
                 if e.key in (K_DOWN, K_s, K_UP, K_w):
                     self.character.change_direction_y(0)
+                    diry = 0
+                data = {
+                    'type': 'change_direction',
+                    'id': self.id,
+                    'direction_x': dirx,
+                    'direction_y': diry
+                }
+                self.sock.send(pickle.dumps(data))
     
 
     def loop(self):
         self.create_level(self.level)
         while self.running:
+            self.sock.settimeout(0.01)
+            try:
+                data = pickle.loads(self.sock.recv(4096))
+                self.sock.settimeout(1)
+            except:
+                pass
+            else:
+                self.parse_data(data)
+
             self.handler()
             self.character.move(self.platforms, self.empty_blocks)
+            self.enemy.move(self.platforms, self.empty_blocks)
             self.check_bombs_to_boom()
             self.check_bomb_areas_to_remove()
             self.check_lose()
@@ -146,6 +160,16 @@ class Game:
 
     
     def run(self):
+        print('waiting for player')
+        while self.pause:
+            self.sock.settimeout(0.01)
+            try:
+                data = pickle.loads(self.sock.recv(4096))
+                self.sock.settimeout(1)
+            except:
+                pass
+            else:
+                self.parse_data(data)
         self.loop()
     
 
@@ -161,7 +185,6 @@ class Game:
 
     def pause(self):
         pass
-
 
 
 if __name__ == "__main__":
