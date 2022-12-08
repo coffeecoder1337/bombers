@@ -99,7 +99,7 @@ class Game:
         y = 80
         ox, oy = 0, 0
         cx, cy = 0, 0
-        self.level = self.read_level_file(f"levels\level{level_number}.txt")
+        self.level = self.read_level_file(f"levels\\level{level_number}.txt")
         for row in self.level:
             for col in row:
                 if col == self.character_symbol:
@@ -347,7 +347,7 @@ def receiving (game, name):
 
 
 if __name__ == "__main__":
-    g = Game(host="172.104.253.171") # host="172.104.253.171"
+    g = Game(host="localhost") # host="172.104.253.171"
     rT = threading.Thread(target = receiving, args = (g, "RecvThread"))
     rT.start()
     g.run()
